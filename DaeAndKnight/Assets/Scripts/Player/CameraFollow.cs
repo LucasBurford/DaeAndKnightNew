@@ -2,7 +2,10 @@
 
 public class CameraFollow : MonoBehaviour
 {
-    public Transform target;
+    public GameManager gameManager;
+
+    public Transform knight;
+    public Transform dae;
 
     public float smoothSpeed = 0.125f;
 
@@ -10,8 +13,19 @@ public class CameraFollow : MonoBehaviour
 
     private void LateUpdate()
     {
-        Vector3 desiredPosition = target.position + offset;
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-        transform.position = smoothedPosition;
+        Vector3 desiredPosition;
+
+        if (gameManager.timeOfDay == GameManager.TimeOfDay.Day) 
+        {
+            desiredPosition = dae.position + offset;
+            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+            transform.position = smoothedPosition;
+        }
+        else if (gameManager.timeOfDay == GameManager.TimeOfDay.Night)
+        {
+            desiredPosition = knight.position + offset;
+            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+            transform.position = smoothedPosition;
+        }
     }
 }
