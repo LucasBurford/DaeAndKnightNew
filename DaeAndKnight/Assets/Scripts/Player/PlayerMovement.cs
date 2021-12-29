@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
 
     #region References
     [Header("References")]
+    public GameManager gameManager;
     public CharacterController controller;
     public Animator animator;
     #endregion
@@ -17,7 +18,6 @@ public class PlayerMovement : MonoBehaviour
 
     // Move speed and gravity
     public float knightMoveSpeed;
-    public float daeMoveSpeed;
     public float gravity = 9.81f;
     public float jumpSpeed = 3.5f;
 
@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     public bool canMove;
 
     // Decide if player is running
-    public bool isRunning;
+    public bool knightIsRunning;
     #endregion
 
     #endregion
@@ -41,42 +41,46 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        #region Movement
-        // Get input
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-
-        Vector3 direction = new Vector3(0, verticalInput, horizontalInput);
-
-        if (controller.isGrounded)
+        // Only move knight if time of day is night
+        if (gameManager.timeOfDay == GameManager.TimeOfDay.Night)
         {
-            if (Input.GetButtonDown("Jump"))
+            #region Movement
+            // Get input
+            float horizontalInput = Input.GetAxis("Horizontal");
+            float verticalInput = Input.GetAxis("Vertical");
+
+            Vector3 direction = new Vector3(0, verticalInput, horizontalInput);
+
+            if (controller.isGrounded)
             {
-                directionY = jumpSpeed;
+                if (Input.GetButtonDown("Jump"))
+                {
+                    directionY = jumpSpeed;
+                }
             }
-        }
 
-        directionY -= gravity * Time.deltaTime;
-        direction.y = directionY;
+            directionY -= gravity * Time.deltaTime;
+            direction.y = directionY;
 
-        controller.Move(direction * knightMoveSpeed * Time.deltaTime);
+            controller.Move(direction * knightMoveSpeed * Time.deltaTime);
 
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.rotation = new Quaternion(0, 180, 0, 1);
-            isRunning = true;
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            transform.rotation = new Quaternion(0, 0, 0, 1);
-            isRunning = true;
-        }
-        else
-        {
-            isRunning = false;
-        }
+            if (Input.GetKey(KeyCode.A))
+            {
+                transform.rotation = new Quaternion(0, 180, 0, 1);
+                knightIsRunning = true;
+            }
+            else if (Input.GetKey(KeyCode.D))
+            {
+                transform.rotation = new Quaternion(0, 0, 0, 1);
+                knightIsRunning = true;
+            }
+            else
+            {
+                knightIsRunning = false;
+            }
 
-        animator.SetBool("IsRunning", isRunning);
-        #endregion
+            animator.SetBool("KnightIsRunning", knightIsRunning);
+            #endregion
+        }
     }
 }
