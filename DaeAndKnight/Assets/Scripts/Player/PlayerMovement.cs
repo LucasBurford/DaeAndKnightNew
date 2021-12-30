@@ -64,6 +64,7 @@ public class PlayerMovement : MonoBehaviour
                 if (Input.GetButtonDown("Jump"))
                 {
                     directionY = jumpSpeed;
+                    FindObjectOfType<AudioManager>().Play("KnightJump");
                 }
             }
             else
@@ -71,6 +72,7 @@ public class PlayerMovement : MonoBehaviour
                 if (Input.GetButtonDown("Jump") && canDoubleJump && hasDoubleJump)
                 {
                     directionY = jumpSpeed * doubleJumpMultiplier;
+                    FindObjectOfType<AudioManager>().Play("KnightDoubleJump");
                     canDoubleJump = false;
                 }
             }

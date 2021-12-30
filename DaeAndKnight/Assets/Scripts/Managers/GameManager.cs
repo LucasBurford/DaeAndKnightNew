@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     #region References
     [Header("References")]
     public TimeOfDayManager timeOfDayManager;
+    public Material dayBox;
+    public Material nightBox;
 
     #region Gameplay and spec
     [Header("Gameplay and spec")]
@@ -44,13 +46,13 @@ public class GameManager : MonoBehaviour
         {
             case TimeOfDay.Day:
                 {
-                    timeOfDayManager.ChangeLightSetting(dayIntensity);
+                    timeOfDayManager.ChangeLightSetting(dayIntensity, dayBox);
                 }
                 break;
 
             case TimeOfDay.Night:
                 {
-                    timeOfDayManager.ChangeLightSetting(nightIntensity);
+                    timeOfDayManager.ChangeLightSetting(nightIntensity, nightBox);
                 }
                 break;
         }

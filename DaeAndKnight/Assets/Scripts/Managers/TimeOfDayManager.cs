@@ -9,6 +9,7 @@ public class TimeOfDayManager : MonoBehaviour
     [Header("References")]
     public GameManager gameManager;
     public Light sun;
+    public Skybox currentBox;
 
     #endregion
 
@@ -24,8 +25,9 @@ public class TimeOfDayManager : MonoBehaviour
         
     }
 
-    public void ChangeLightSetting(float newIntensity)
+    public void ChangeLightSetting(float newIntensity, Material newBox)
     {
         sun.intensity = newIntensity;
+        RenderSettings.skybox = newBox;
     }
 }
