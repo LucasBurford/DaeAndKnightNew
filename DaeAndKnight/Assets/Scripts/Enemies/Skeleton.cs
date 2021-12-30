@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Skeleton : MonoBehaviour
 {
+    public Player player;
     public Animator animator;
     public Transform attackPoint;
     public LayerMask playerLayer;
@@ -25,6 +26,11 @@ public class Skeleton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Random.Range(1, 50) == 1)
+        {
+            FindObjectOfType<AudioManager>().Play("SkeletonIdle");
+        }
+
         animator.SetBool("Attack1h1", isAttacking);
 
         if (isTouchingPlayer && canAttack)
@@ -48,7 +54,8 @@ public class Skeleton : MonoBehaviour
     public void TakeDamage(float damage)
     {
         // Play skeleton damage sound
-
+        FindObjectOfType<AudioManager>().Play("SkeletonDamageBonesRattle");
+        FindObjectOfType<AudioManager>().Play("SkeletonHurt");
 
         health -= damage;
     }
@@ -56,6 +63,7 @@ public class Skeleton : MonoBehaviour
     private void Die()
     {
         // Give XP
+        player.GiveXP(10);
 
         Destroy(gameObject);
     }
