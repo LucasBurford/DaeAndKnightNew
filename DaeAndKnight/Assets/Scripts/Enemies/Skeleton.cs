@@ -16,6 +16,7 @@ public class Skeleton : MonoBehaviour
     public bool isTouchingPlayer;
     public bool canAttack;
     public bool isAttacking;
+    public bool hasTakenDamage;
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +54,13 @@ public class Skeleton : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        if (!hasTakenDamage)
+        {
+            hasTakenDamage = true;
+            animator.SetBool("Hit1", hasTakenDamage);
+            StartCoroutine(WaitToResetHurtAnimation());
+        }
+
         // Play skeleton damage sound
         FindObjectOfType<AudioManager>().Play("SkeletonDamageBonesRattle");
         FindObjectOfType<AudioManager>().Play("SkeletonHurt");
@@ -101,6 +109,13 @@ public class Skeleton : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         isAttacking = false;
+    }
+
+    IEnumerator WaitToResetHurtAnimation()
+    {
+        yield return new WaitForSeconds(1);
+
+        hasTakenDamage = false;
     }
 
     private void OnTriggerStay(Collider other)
