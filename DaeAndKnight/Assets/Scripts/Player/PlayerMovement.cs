@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     public float knightMoveSpeed;
     public float gravity = 9.81f;
     public float jumpSpeed = 3.5f;
+    public float doubleJumpMultiplier = 0.5f;
 
     private float directionY;
 
@@ -28,6 +29,9 @@ public class PlayerMovement : MonoBehaviour
 
     // Decide if player is running
     public bool knightIsRunning;
+
+    // Decide if player can double jump
+    public bool canDoubleJump;
     #endregion
 
     #endregion
@@ -35,6 +39,7 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         
     }
 
@@ -53,9 +58,19 @@ public class PlayerMovement : MonoBehaviour
 
             if (controller.isGrounded)
             {
+                canDoubleJump = true;
+
                 if (Input.GetButtonDown("Jump"))
                 {
                     directionY = jumpSpeed;
+                }
+            }
+            else
+            {
+                if (Input.GetButtonDown("Jump") && canDoubleJump)
+                {
+                    directionY = jumpSpeed * doubleJumpMultiplier;
+                    canDoubleJump = false;
                 }
             }
 
