@@ -19,12 +19,19 @@ public class DaeMovement : MonoBehaviour
     public float daeMoveSpeed;
     public float gravity = 9.81f;
     public float jumpSpeed = 3.5f;
+    public float doubleJumpMultiplier = 0.5f;
 
     private float directionY;
 
     // Decide if player can move
     public bool canMove;
 
+    // Decide if player is running
+    public bool daeIsRunning;
+
+    // Decide if player can double jump
+    public bool hasDoubleJump;
+    public bool canDoubleJump;
     #endregion
 
     #endregion
@@ -32,6 +39,7 @@ public class DaeMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
 
     }
 
@@ -50,9 +58,19 @@ public class DaeMovement : MonoBehaviour
 
             if (controller.isGrounded)
             {
+                canDoubleJump = true;
+
                 if (Input.GetButtonDown("Jump"))
                 {
                     directionY = jumpSpeed;
+                }
+            }
+            else
+            {
+                if (Input.GetButtonDown("Jump") && canDoubleJump && hasDoubleJump)
+                {
+                    directionY = jumpSpeed * doubleJumpMultiplier;
+                    canDoubleJump = false;
                 }
             }
 
@@ -64,10 +82,16 @@ public class DaeMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.A))
             {
                 transform.rotation = new Quaternion(0, 180, 0, 1);
+                daeIsRunning = true;
             }
             else if (Input.GetKey(KeyCode.D))
             {
                 transform.rotation = new Quaternion(0, 0, 0, 1);
+                daeIsRunning = true;
+            }
+            else
+            {
+                daeIsRunning = false;
             }
             #endregion
         }

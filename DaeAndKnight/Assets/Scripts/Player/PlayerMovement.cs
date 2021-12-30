@@ -31,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     public bool knightIsRunning;
 
     // Decide if player can double jump
+    public bool hasDoubleJump;
     public bool canDoubleJump;
     #endregion
 
@@ -67,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                if (Input.GetButtonDown("Jump") && canDoubleJump)
+                if (Input.GetButtonDown("Jump") && canDoubleJump && hasDoubleJump)
                 {
                     directionY = jumpSpeed * doubleJumpMultiplier;
                     canDoubleJump = false;

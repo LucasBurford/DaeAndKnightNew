@@ -34,7 +34,26 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CheckTimeOfDay();
         GetInput();
+    }
+
+    private void CheckTimeOfDay()
+    {
+        switch (timeOfDay)
+        {
+            case TimeOfDay.Day:
+                {
+                    timeOfDayManager.ChangeLightSetting(dayIntensity);
+                }
+                break;
+
+            case TimeOfDay.Night:
+                {
+                    timeOfDayManager.ChangeLightSetting(nightIntensity);
+                }
+                break;
+        }
     }
 
     private void GetInput()
@@ -44,16 +63,10 @@ public class GameManager : MonoBehaviour
             if (timeOfDay == TimeOfDay.Day)
             {
                 timeOfDay = TimeOfDay.Night;
-
-                // Rotate sun around and bring moon out
-                timeOfDayManager.ChangeLightSetting(nightIntensity);
             }
             else if (timeOfDay == TimeOfDay.Night)
             {
                 timeOfDay = TimeOfDay.Day;
-
-                // Rotate moon around and bring sun out
-                timeOfDayManager.ChangeLightSetting(dayIntensity);
             }
 
             // Play cool sound effect
