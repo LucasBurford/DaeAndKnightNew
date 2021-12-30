@@ -6,7 +6,6 @@ public class FireFlicker : MonoBehaviour
 {
     public Light mLight;
 
-    public float brightness;
     public float flickerRate;
 
     // Update is called once per frame
