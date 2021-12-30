@@ -17,6 +17,7 @@ public class Skeleton : MonoBehaviour
     public bool canAttack;
     public bool isAttacking;
     public bool hasTakenDamage;
+    public bool isDead;
 
     // Start is called before the first frame update
     void Start()
@@ -27,7 +28,7 @@ public class Skeleton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Random.Range(1, 50) == 1)
+        if (Random.Range(1, 150) == 1)
         {
             FindObjectOfType<AudioManager>().Play("SkeletonIdle");
         }
@@ -46,10 +47,13 @@ public class Skeleton : MonoBehaviour
 
     private void Attack()
     {
-        canAttack = false;
-        isAttacking = true;
+        if (!isDead)
+        {
+            canAttack = false;
+            isAttacking = true;
 
-        StartCoroutine(WaitToPlayAttackAnimation());
+            StartCoroutine(WaitToPlayAttackAnimation());
+        }
     }
 
     public void TakeDamage(float damage)
@@ -70,10 +74,11 @@ public class Skeleton : MonoBehaviour
 
     private void Die()
     {
-        // Give XP
-        player.GiveXP(10);
+        isDead = true;
 
-        Destroy(gameObject);
+        animator.Play("Fall1");
+
+        StartCoroutine(WaitToDestroy());
     }
 
     IEnumerator WaitToPlayAttackAnimation()
@@ -118,6 +123,14 @@ public class Skeleton : MonoBehaviour
         hasTakenDamage = false;
     }
 
+    IEnumerator WaitToDestroy()
+    {
+        yield return new WaitForSeconds(2);
+
+        // Give XP
+        player.GiveXP(10);
+        Destroy(gameObject);
+    }
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))

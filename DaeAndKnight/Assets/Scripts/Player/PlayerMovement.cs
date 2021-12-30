@@ -47,58 +47,59 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        #region Movement
+        // Get input
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+
+        Vector3 direction = new Vector3(0, verticalInput, horizontalInput);
+
+        if (controller.isGrounded)
+        {
+            canDoubleJump = true;
+
+            if (Input.GetButtonDown("Jump"))
+            {
+                directionY = jumpSpeed;
+                FindObjectOfType<AudioManager>().Play("KnightJump");
+            }
+        }
+        else
+        {
+            if (Input.GetButtonDown("Jump") && canDoubleJump && hasDoubleJump)
+            {
+                directionY = jumpSpeed * doubleJumpMultiplier;
+                FindObjectOfType<AudioManager>().Play("KnightDoubleJump");
+                canDoubleJump = false;
+            }
+        }
+
+        directionY -= gravity * Time.deltaTime;
+        direction.y = directionY;
+
+        controller.Move(direction * knightMoveSpeed * Time.deltaTime);
+
+        if (Input.GetKey(KeyCode.A))
+        {
+            transform.rotation = new Quaternion(0, 180, 0, 1);
+            knightIsRunning = true;
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            transform.rotation = new Quaternion(0, 0, 0, 1);
+            knightIsRunning = true;
+        }
+        else
+        {
+            knightIsRunning = false;
+        }
+
+        animator.SetBool("KnightIsRunning", knightIsRunning);
+        #endregion
         // Only move knight if time of day is night
         if (gameManager.timeOfDay == GameManager.TimeOfDay.Night)
         {
-            #region Movement
-            // Get input
-            float horizontalInput = Input.GetAxis("Horizontal");
-            float verticalInput = Input.GetAxis("Vertical");
 
-            Vector3 direction = new Vector3(0, verticalInput, horizontalInput);
-
-            if (controller.isGrounded)
-            {
-                canDoubleJump = true;
-
-                if (Input.GetButtonDown("Jump"))
-                {
-                    directionY = jumpSpeed;
-                    FindObjectOfType<AudioManager>().Play("KnightJump");
-                }
-            }
-            else
-            {
-                if (Input.GetButtonDown("Jump") && canDoubleJump && hasDoubleJump)
-                {
-                    directionY = jumpSpeed * doubleJumpMultiplier;
-                    FindObjectOfType<AudioManager>().Play("KnightDoubleJump");
-                    canDoubleJump = false;
-                }
-            }
-
-            directionY -= gravity * Time.deltaTime;
-            direction.y = directionY;
-
-            controller.Move(direction * knightMoveSpeed * Time.deltaTime);
-
-            if (Input.GetKey(KeyCode.A))
-            {
-                transform.rotation = new Quaternion(0, 180, 0, 1);
-                knightIsRunning = true;
-            }
-            else if (Input.GetKey(KeyCode.D))
-            {
-                transform.rotation = new Quaternion(0, 0, 0, 1);
-                knightIsRunning = true;
-            }
-            else
-            {
-                knightIsRunning = false;
-            }
-
-            animator.SetBool("KnightIsRunning", knightIsRunning);
-            #endregion
         }
     }
 }

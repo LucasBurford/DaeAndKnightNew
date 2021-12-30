@@ -15,17 +15,19 @@ public class CameraFollow : MonoBehaviour
     {
         Vector3 desiredPosition;
 
-        if (gameManager.timeOfDay == GameManager.TimeOfDay.Day) 
+        desiredPosition = knight.position + offset;
+        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+        transform.position = smoothedPosition;
+
+        //if (gameManager.timeOfDay == GameManager.TimeOfDay.Day) 
+        //{
+        //    desiredPosition = dae.position + offset;
+        //    Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
+        //    transform.position = smoothedPosition;
+        //}
+        if (gameManager.timeOfDay == GameManager.TimeOfDay.Night)
         {
-            desiredPosition = dae.position + offset;
-            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-            transform.position = smoothedPosition;
-        }
-        else if (gameManager.timeOfDay == GameManager.TimeOfDay.Night)
-        {
-            desiredPosition = knight.position + offset;
-            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
-            transform.position = smoothedPosition;
+
         }
     }
 }
