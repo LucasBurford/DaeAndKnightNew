@@ -6,11 +6,16 @@ public class OneWayCollider : MonoBehaviour
 {
     public Collider col;
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            col.isTrigger = false;
+            GameObject go = other.gameObject;
+
+            go.transform.position = new Vector3(go.transform.position.x, go.transform.position.y + 2.5f, go.transform.position.z);
+
+            // Wait for a while so player can land
+            StartCoroutine(WaitForPlayerToLand());
         }
     }
 
@@ -18,10 +23,17 @@ public class OneWayCollider : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
+            print("X");
             if (Input.GetKeyDown(KeyCode.S))
             {
                 col.isTrigger = true;
             }
         }
+    }
+
+    IEnumerator WaitForPlayerToLand()
+    {
+        yield return new WaitForSeconds(0.4f);
+        col.isTrigger = false;
     }
 }
