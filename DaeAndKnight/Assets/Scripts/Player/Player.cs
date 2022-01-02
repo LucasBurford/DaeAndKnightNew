@@ -8,10 +8,12 @@ public class Player : MonoBehaviour
     public TMP_Text healthText;
     public TMP_Text levelText;
     public TMP_Text givexpText;
+    public TMP_Text goldText;
 
     public float health;
     public int xp;
     public int level;
+    public int gold;
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +43,11 @@ public class Player : MonoBehaviour
         StartCoroutine(WaitToRemoveGiveXPText());
     }
 
+    public void GiveGold(int amount)
+    {
+        gold += amount;
+    }
+
     private void CheckLevel()
     {
         if (xp >= 100)
@@ -60,6 +67,7 @@ public class Player : MonoBehaviour
     {
         healthText.text = health.ToString();
         levelText.text = level.ToString();
+        goldText.text = gold.ToString();
     }
 
     IEnumerator WaitToRemoveGiveXPText()
