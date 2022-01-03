@@ -9888,6 +9888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ead2a262c6031b45a81bd68e5f8a475, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 0}
   levelText: {fileID: 891050017}
   givexpText: {fileID: 1491261704}
   goldText: {fileID: 0}
@@ -9900,6 +9901,7 @@ MonoBehaviour:
   level: 0
   gold: 0
   isBlocking: 0
+  gotHit: 0
 --- !u!1001 &866546097
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14462,7 +14464,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8422892626600249584, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.23
+      value: 13.29
       objectReference: {fileID: 0}
     - target: {fileID: 8422892626600249584, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -15251,6 +15253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ead2a262c6031b45a81bd68e5f8a475, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 1226378443}
   levelText: {fileID: 891050017}
   givexpText: {fileID: 1491261704}
   goldText: {fileID: 871993650}
@@ -15263,6 +15266,7 @@ MonoBehaviour:
   level: 0
   gold: 0
   isBlocking: 0
+  gotHit: 0
 --- !u!95 &1226378443 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 8422892626592999198, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}

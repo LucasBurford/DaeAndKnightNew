@@ -67,9 +67,10 @@ public class Skeleton : MonoBehaviour
         if (!isDead)
         {
             canAttack = false;
-            isAttacking = true;
 
-            StartCoroutine(WaitToPlayAttackAnimation());
+            animator.Play("Attack1h1");
+
+            StartCoroutine(WaitToCastAttack());
         }
     }
 
@@ -98,25 +99,21 @@ public class Skeleton : MonoBehaviour
         StartCoroutine(WaitToDestroy());
     }
 
-    IEnumerator WaitToPlayAttackAnimation()
+    IEnumerator WaitToCastAttack()
     {
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(0.7f);
 
-        // Cast sphere
         Collider[] hitObjects = Physics.OverlapSphere(attackPoint.position, attackRange, playerLayer);
 
-        // Interate through objects
         foreach (Collider col in hitObjects)
         {
             if (col.gameObject.CompareTag("Player"))
             {
-                // Damage player
                 col.gameObject.SendMessageUpwards("TakeDamage", attackDamage);
             }
         }
 
         StartCoroutine(WaitToResetAttack());
-        StartCoroutine(WaitToResetAttackAnimation());
     }
 
     IEnumerator WaitToResetAttack()

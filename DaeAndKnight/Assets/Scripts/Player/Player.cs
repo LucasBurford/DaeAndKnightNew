@@ -6,6 +6,8 @@ using TMPro;
 
 public class Player : MonoBehaviour
 {
+    public Animator animator;
+
     public TMP_Text levelText;
     public TMP_Text givexpText;
     public TMP_Text goldText;
@@ -21,18 +23,22 @@ public class Player : MonoBehaviour
     public int gold;
 
     public bool isBlocking;
+    public bool gotHit;
 
     // Start is called before the first frame update
     void Start()
     {
-
+       
     }
 
     // Update is called once per frame
     void Update()
     {
         UpdateUI();
+        CheckValues();
         CheckLevel();
+
+        animator.SetBool("GotHit", gotHit);
     }
 
     public void TakeDamage(float damage)
@@ -47,7 +53,8 @@ public class Player : MonoBehaviour
             FindObjectOfType<AudioManager>().Play("KnightHurt");
             health -= damage;
         }
-
+        //gotHit = true;
+        //StartCoroutine(WaitToResetGotHit());
     }
 
     public void GiveXP(int amount)
@@ -62,6 +69,29 @@ public class Player : MonoBehaviour
     public void GiveGold(int amount)
     {
         gold += amount;
+    }
+
+    private void CheckValues()
+    {
+        if (health <= 0)
+        {
+            Die();
+        }
+
+        if (stamina <= 0)
+        {
+            Stun();
+        }
+    }
+
+    private void Stun()
+    {
+
+    }
+
+    private void Die()
+    {
+
     }
 
     private void CheckLevel()
@@ -92,6 +122,13 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         givexpText.gameObject.SetActive(false);
+    }
+
+    IEnumerator WaitToResetGotHit()
+    {
+        yield return new WaitForSeconds(0.4f);
+
+        gotHit = false;
     }
 
     private void OnTriggerStay(Collider other)
