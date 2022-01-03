@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Skeleton : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class Skeleton : MonoBehaviour
     public Animator animator;
     public Transform attackPoint;
     public LayerMask playerLayer;
+    public NavMeshAgent agent;
+    public Vector3 startingPos;
 
     public float health;
     public float attackDamage;
@@ -22,7 +25,7 @@ public class Skeleton : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        agent = gameObject.GetComponent<NavMeshAgent>();
     }
 
     // Update is called once per frame
@@ -31,6 +34,16 @@ public class Skeleton : MonoBehaviour
         if (Random.Range(1, 150) == 1)
         {
             FindObjectOfType<AudioManager>().Play("SkeletonIdle");
+        }
+
+        if (Vector3.Distance(transform.position, player.transform.position) < 5)
+        {
+            agent.isStopped = false;
+            agent.SetDestination(player.transform.position);
+        }
+        else
+        {
+            agent.isStopped = true;
         }
 
         animator.SetBool("Attack1h1", isAttacking);
