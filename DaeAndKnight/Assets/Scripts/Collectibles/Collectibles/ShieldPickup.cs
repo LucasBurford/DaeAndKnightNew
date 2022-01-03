@@ -12,8 +12,13 @@ public class ShieldPickup : MonoBehaviour
         transform.Rotate(0, 3, 0);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        
+        if (other.gameObject.CompareTag("Player"))
+        {
+            playerAttack.hasShield = true;
+            FindObjectOfType<ItemAcquired>().AcquiredItem("Shield", "Right Click");
+            Destroy(gameObject);
+        }
     }
 }
