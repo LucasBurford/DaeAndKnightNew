@@ -53,8 +53,8 @@ public class Player : MonoBehaviour
             FindObjectOfType<AudioManager>().Play("KnightHurt");
             health -= damage;
         }
-        //gotHit = true;
-        //StartCoroutine(WaitToResetGotHit());
+        gotHit = true;
+        StartCoroutine(WaitToResetGotHit());
     }
 
     public void GiveXP(int amount)
@@ -126,7 +126,7 @@ public class Player : MonoBehaviour
 
     IEnumerator WaitToResetGotHit()
     {
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.8f);
 
         gotHit = false;
     }
