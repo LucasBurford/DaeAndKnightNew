@@ -77,7 +77,10 @@ public class PlayerMovement : MonoBehaviour
         directionY -= gravity * Time.deltaTime;
         direction.y = directionY;
 
-        controller.Move(direction * knightMoveSpeed * Time.deltaTime);
+        if (canMove)
+        {
+            controller.Move(direction * knightMoveSpeed * Time.deltaTime);
+        }
 
         if (Input.GetKey(KeyCode.A))
         {

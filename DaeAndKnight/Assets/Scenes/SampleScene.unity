@@ -9888,6 +9888,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ead2a262c6031b45a81bd68e5f8a475, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerMovement: {fileID: 0}
   animator: {fileID: 0}
   levelText: {fileID: 891050017}
   givexpText: {fileID: 1491261704}
@@ -9897,11 +9898,14 @@ MonoBehaviour:
   staminaSlider: {fileID: 0}
   health: 100
   stamina: 0
+  staminaRechargeRate: 0
   xp: 0
   level: 0
   gold: 0
   isBlocking: 0
   gotHit: 0
+  isStunned: 0
+  canRechargeStamina: 0
 --- !u!1001 &866546097
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15216,7 +15220,7 @@ MonoBehaviour:
   canAttack: 1
   isAttacking: 0
   justHadCritical: 0
-  hasShield: 0
+  hasShield: 1
   isblocking: 0
 --- !u!114 &1226378441
 MonoBehaviour:
@@ -15253,6 +15257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ead2a262c6031b45a81bd68e5f8a475, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerMovement: {fileID: 1226378441}
   animator: {fileID: 1226378443}
   levelText: {fileID: 891050017}
   givexpText: {fileID: 1491261704}
@@ -15262,11 +15267,14 @@ MonoBehaviour:
   staminaSlider: {fileID: 1648578319}
   health: 100
   stamina: 100
+  staminaRechargeRate: 1
   xp: 0
   level: 0
   gold: 0
   isBlocking: 0
   gotHit: 0
+  isStunned: 0
+  canRechargeStamina: 0
 --- !u!95 &1226378443 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 8422892626592999198, guid: 214e08cd5e5d74c458e2a81b7ec2c84c, type: 3}

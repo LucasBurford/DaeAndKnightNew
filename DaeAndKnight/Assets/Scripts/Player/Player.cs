@@ -6,6 +6,8 @@ using TMPro;
 
 public class Player : MonoBehaviour
 {
+    public PlayerMovement playerMovement;
+
     public Animator animator;
 
     public TMP_Text levelText;
@@ -18,12 +20,15 @@ public class Player : MonoBehaviour
 
     public float health;
     public float stamina;
+    public float staminaRechargeRate;
     public int xp;
     public int level;
     public int gold;
 
     public bool isBlocking;
     public bool gotHit;
+    public bool isStunned;
+    public bool canRechargeStamina;
 
     // Start is called before the first frame update
     void Start()
@@ -37,8 +42,21 @@ public class Player : MonoBehaviour
         UpdateUI();
         CheckValues();
         CheckLevel();
+        SetAnimatorValues();
 
-        animator.SetBool("GotHit", gotHit);
+        if (canRechargeStamina)
+        {
+            stamina += staminaRechargeRate;
+        }
+        if (stamina >= 100)
+        {
+            canRechargeStamina = false;
+        }
+
+        if (isBlocking)
+        {
+            canRechargeStamina = false;
+        }
     }
 
     public void TakeDamage(float damage)
@@ -47,6 +65,7 @@ public class Player : MonoBehaviour
         {
             FindObjectOfType<AudioManager>().Play("ShieldHit1");
             stamina -= damage;
+            StartCoroutine(WaitToRechargeStamina());
         }
         else
         {
@@ -78,15 +97,34 @@ public class Player : MonoBehaviour
             Die();
         }
 
+        #region Stun
         if (stamina <= 0)
         {
-            Stun();
+            isStunned = true;
         }
+        else if (stamina >= 100)
+        {
+            isStunned = false;
+            stamina = 100;
+        }
+
+        if (isStunned)
+        {
+            playerMovement.canMove = false;
+
+            canRechargeStamina = true;
+        }
+        else
+        {
+            playerMovement.canMove = true;
+        }
+        #endregion
     }
 
-    private void Stun()
+    private void SetAnimatorValues()
     {
-
+        animator.SetBool("GotHit", gotHit);
+        animator.SetBool("IsStunned", isStunned);
     }
 
     private void Die()
@@ -117,6 +155,14 @@ public class Player : MonoBehaviour
         goldText.text = gold.ToString();
     }
 
+    #region Coroutines
+
+    IEnumerator WaitToRechargeStamina()
+    {
+        yield return new WaitForSeconds(3);
+
+        canRechargeStamina = true;
+    }
     IEnumerator WaitToRemoveGiveXPText()
     {
         yield return new WaitForSeconds(1.5f);
@@ -130,7 +176,9 @@ public class Player : MonoBehaviour
 
         gotHit = false;
     }
+    #endregion
 
+    #region Misc Methods
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Teleporter"))
@@ -146,4 +194,5 @@ public class Player : MonoBehaviour
             pressToTeleportText.gameObject.SetActive(false);
         }
     }
+    #endregion
 }
