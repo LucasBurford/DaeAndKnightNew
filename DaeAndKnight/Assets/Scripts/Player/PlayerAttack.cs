@@ -8,6 +8,7 @@ public class PlayerAttack : MonoBehaviour
 
     #region References
     [Header("References")]
+    public Player player;
     public Animator animator;
     public Transform attackPoint;
     public LayerMask enemyLayers;
@@ -22,7 +23,10 @@ public class PlayerAttack : MonoBehaviour
 
     public bool canAttack;
     public bool isAttacking;
-    bool justHadCritical;
+    public bool justHadCritical;
+
+    public bool hasShield;
+    public bool isblocking;
     #endregion
 
     #endregion
@@ -82,6 +86,23 @@ public class PlayerAttack : MonoBehaviour
             // Prevent attack spam
             StartCoroutine(WaitToResetAttack());
         }
+
+        if (Input.GetMouseButton(1) && hasShield)
+        {
+            isblocking = true;
+        }
+        else if (Input.GetMouseButtonUp(1) && hasShield)
+        {
+            isblocking = false;
+        }
+        
+        CheckBlock();
+    }
+
+    private void CheckBlock()
+    {
+        animator.SetBool("IsBlocking", isblocking);
+        player.isBlocking = isblocking;
     }
 
     private void PlaySwordSwipeSound(int number)

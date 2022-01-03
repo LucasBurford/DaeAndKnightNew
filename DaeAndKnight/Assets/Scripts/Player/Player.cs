@@ -1,19 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class Player : MonoBehaviour
 {
-    public TMP_Text healthText;
     public TMP_Text levelText;
     public TMP_Text givexpText;
     public TMP_Text goldText;
+    public TMP_Text pressToTeleportText;
+
+    public Slider healthSlider;
+    public Slider staminaSlider;
 
     public float health;
+    public float stamina;
     public int xp;
     public int level;
     public int gold;
+
+    public bool isBlocking;
 
     // Start is called before the first frame update
     void Start()
@@ -24,14 +31,23 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateTextFields();
+        UpdateUI();
         CheckLevel();
     }
 
     public void TakeDamage(float damage)
     {
-        FindObjectOfType<AudioManager>().Play("KnightHurt");
-        health -= damage;
+        if (isBlocking)
+        {
+            FindObjectOfType<AudioManager>().Play("ShieldHit1");
+            stamina -= damage;
+        }
+        else
+        {
+            FindObjectOfType<AudioManager>().Play("KnightHurt");
+            health -= damage;
+        }
+
     }
 
     public void GiveXP(int amount)
@@ -63,9 +79,10 @@ public class Player : MonoBehaviour
         level++;
     }
 
-    private void UpdateTextFields()
+    private void UpdateUI()
     {
-        healthText.text = health.ToString();
+        healthSlider.value = health;
+        staminaSlider.value = stamina;
         levelText.text = level.ToString();
         goldText.text = gold.ToString();
     }
@@ -75,5 +92,21 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         givexpText.gameObject.SetActive(false);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Teleporter"))
+        {
+            pressToTeleportText.gameObject.SetActive(true);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Teleporter"))
+        {
+            pressToTeleportText.gameObject.SetActive(false);
+        }
     }
 }
