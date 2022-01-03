@@ -1159,10 +1159,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   agent: {fileID: 0}
-  startingPos: {x: 0, y: 0, z: 0}
+  startingPos: {x: 8.6, y: 8.15, z: -7}
   health: 100
   attackDamage: 15
   attackRange: 2
+  walkSpeed: 0
   isTouchingPlayer: 0
   canAttack: 1
   isAttacking: 0

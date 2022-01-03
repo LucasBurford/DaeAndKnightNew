@@ -129,7 +129,7 @@ public class Player : MonoBehaviour
 
     private void Die()
     {
-
+        animator.Play("Die");
     }
 
     private void CheckLevel()

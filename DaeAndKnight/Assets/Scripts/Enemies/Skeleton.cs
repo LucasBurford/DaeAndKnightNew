@@ -27,6 +27,7 @@ public class Skeleton : MonoBehaviour
     void Start()
     {
         agent = gameObject.GetComponent<NavMeshAgent>();
+        player = FindObjectOfType<Player>();
     }
 
     // Update is called once per frame
