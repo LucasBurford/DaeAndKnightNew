@@ -8363,6 +8363,7 @@ Transform:
   - {fileID: 1873843177}
   - {fileID: 194245276}
   - {fileID: 748841144}
+  - {fileID: 1213406504}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9791,6 +9792,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
+  - component: {fileID: 963194230}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -9880,6 +9882,102 @@ MonoBehaviour:
   dae: {fileID: 852125735}
   smoothSpeed: 0.125
   offset: {x: 10, y: 4, z: 0}
+--- !u!82 &963194230
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 0d3781e19ee7c754db1df6bb0e407e5e, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &969942059
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11949,6 +12047,50 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8175927956360384182, guid: da0529ba1785f4b44b0d561822516764, type: 3}
   m_PrefabInstance: {fileID: 1203775858}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1213406503
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1213406504}
+  - component: {fileID: 1213406505}
+  m_Layer: 0
+  m_Name: AmbienceManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1213406504
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1213406503}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 804333044}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1213406505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1213406503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17309909b66684e4c9a5b239b3d0c9c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  randomPlayChance: 100
 --- !u!1001 &1216688838
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13947,6 +14089,7 @@ MonoBehaviour:
   enemyLayers:
     serializedVersion: 2
     m_Bits: 256
+  criticalChance: 50
   attackDamage: 100
   attackRange: 2
   canAttack: 1
@@ -18863,6 +19006,51 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Teleport
     clip: {fileID: 8300000, guid: 4827ff15b93f30f4fbd911292ede4538, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: SwordSwipe1
+    clip: {fileID: 8300000, guid: ce6f3b53ed7f65c479fd914dda98b33b, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: SwordSwipe2
+    clip: {fileID: 8300000, guid: 1f02aec694d26ed4b8d7d776af00786f, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: SwordSwipe3
+    clip: {fileID: 8300000, guid: d95c71df0fce6504fb79664bbd1baea1, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: SwordSwipe4
+    clip: {fileID: 8300000, guid: c5a196a0d609f9e4fa39182ef927e9e8, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: SwordSwipe5
+    clip: {fileID: 8300000, guid: 59848e3c5d4407a4d94dead6085760b6, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: SwordSwipe6
+    clip: {fileID: 8300000, guid: 1a15cb77d1280b84da30be30a788f84e, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: SwordSwipeCritical
+    clip: {fileID: 8300000, guid: c1d9b7fd061716b4694b03fe91e1faf5, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: RandomBackgroundMusic1
+    clip: {fileID: 8300000, guid: 9af796505ab51cc43b535b0f7499d55e, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: SwordSwipeCritical
+    clip: {fileID: 8300000, guid: c1d9b7fd061716b4694b03fe91e1faf5, type: 3}
     volume: 1
     pitch: 1
     source: {fileID: 0}

@@ -15,6 +15,7 @@ public class Skeleton : MonoBehaviour
     public float health;
     public float attackDamage;
     public float attackRange;
+    public float walkSpeed;
 
     public bool isTouchingPlayer;
     public bool canAttack;
@@ -39,13 +40,16 @@ public class Skeleton : MonoBehaviour
         if (Vector3.Distance(transform.position, player.transform.position) < 5)
         {
             agent.isStopped = false;
+            walkSpeed = 1;
             agent.SetDestination(player.transform.position);
         }
         else
         {
             agent.isStopped = true;
+            walkSpeed = 0;
         }
 
+        animator.SetFloat("WalkSpeed", walkSpeed);
         animator.SetBool("Attack1h1", isAttacking);
 
         if (isTouchingPlayer && canAttack)
