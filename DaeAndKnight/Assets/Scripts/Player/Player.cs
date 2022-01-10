@@ -70,7 +70,8 @@ public class Player : MonoBehaviour
         else
         {
             FindObjectOfType<AudioManager>().Play("KnightHurt");
-            health -= damage;
+            health -= damage / 2; // For some reason TakeDamage is being called twice and I can't figure out why
+                                  // So for time being, divide incoming damage by 2 to keep normal damage figures
         }
         gotHit = true;
         StartCoroutine(WaitToResetGotHit());

@@ -11,6 +11,7 @@ public class Skeleton : MonoBehaviour
     public LayerMask playerLayer;
     public NavMeshAgent agent;
     public Vector3 startingPos;
+    public Collider col;
 
     public float health;
     public float attackDamage;
@@ -22,12 +23,14 @@ public class Skeleton : MonoBehaviour
     public bool isAttacking;
     public bool hasTakenDamage;
     public bool isDead;
+    public bool justTookDamage;
 
     // Start is called before the first frame update
     void Start()
     {
         agent = gameObject.GetComponent<NavMeshAgent>();
         player = FindObjectOfType<Player>();
+        col = GetComponent<Collider>();
     }
 
     // Update is called once per frame
@@ -77,6 +80,8 @@ public class Skeleton : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        justTookDamage = true;
+
         if (!hasTakenDamage)
         {
             hasTakenDamage = true;
@@ -89,11 +94,17 @@ public class Skeleton : MonoBehaviour
         FindObjectOfType<AudioManager>().Play("SkeletonHurt");
 
         health -= damage;
+
+        StartCoroutine(WaitToResetJustTookDamage());
     }
 
     private void Die()
     {
         isDead = true;
+
+        col.isTrigger = true;
+
+        agent.isStopped = true;
 
         animator.Play("Fall1");
 
@@ -102,19 +113,22 @@ public class Skeleton : MonoBehaviour
 
     IEnumerator WaitToCastAttack()
     {
-        yield return new WaitForSeconds(0.7f);
-
-        Collider[] hitObjects = Physics.OverlapSphere(attackPoint.position, attackRange, playerLayer);
-
-        foreach (Collider col in hitObjects)
+        if (!isDead)
         {
-            if (col.gameObject.CompareTag("Player"))
-            {
-                col.gameObject.SendMessageUpwards("TakeDamage", attackDamage);
-            }
-        }
+            yield return new WaitForSeconds(0.7f);
 
-        StartCoroutine(WaitToResetAttack());
+            Collider[] hitObjects = Physics.OverlapSphere(attackPoint.position, attackRange, playerLayer);
+
+            foreach (Collider col in hitObjects)
+            {
+                if (col.gameObject.CompareTag("Player"))
+                {
+                    col.gameObject.SendMessageUpwards("TakeDamage", attackDamage);
+                }
+            }
+
+            StartCoroutine(WaitToResetAttack());
+        }
     }
 
     IEnumerator WaitToResetAttack()
@@ -136,6 +150,12 @@ public class Skeleton : MonoBehaviour
         yield return new WaitForSeconds(1);
 
         hasTakenDamage = false;
+    }
+
+    IEnumerator WaitToResetJustTookDamage()
+    {
+        yield return new WaitForSeconds(1f);
+        justTookDamage = false;
     }
 
     IEnumerator WaitToDestroy()

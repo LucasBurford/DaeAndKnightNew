@@ -21,6 +21,7 @@ public class MushroomEnemy : MonoBehaviour
 
     public bool canAttack;
     public bool isDead;
+    public bool justTookDamage;
 
     [Header("State")]
     public States state;
@@ -106,8 +107,10 @@ public class MushroomEnemy : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        justTookDamage = true;
         health -= damage;
         anim.DamageAni();
+        StartCoroutine(WaitToResetJustTookDamage());
     }
 
     private void Die()
@@ -119,6 +122,12 @@ public class MushroomEnemy : MonoBehaviour
         Destroy(gameObject);
     }
 
+
+    IEnumerator WaitToResetJustTookDamage()
+    {
+        yield return new WaitForSeconds(1.5f);
+        justTookDamage = false;
+    }
     IEnumerator WaitToResetAttack()
     {
         yield return new WaitForSeconds(2);
@@ -128,7 +137,7 @@ public class MushroomEnemy : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.CompareTag("Player") && canAttack && !isDead)
+        if (other.gameObject.CompareTag("Player") && canAttack && !isDead && !justTookDamage)
         {
             Attack();
         }

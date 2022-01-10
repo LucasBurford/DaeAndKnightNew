@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerAttack : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class PlayerAttack : MonoBehaviour
     public Animator animator;
     public Transform attackPoint;
     public LayerMask enemyLayers;
+    public TMP_Text damageText;
+    Camera cam;
 
     #endregion
 
@@ -76,9 +79,13 @@ public class PlayerAttack : MonoBehaviour
                 // If we hit a gameobject with Enemy tag, SendMessage to take damage
                 if (col.gameObject.CompareTag("Enemy"))
                 {
-                    col.gameObject.SendMessageUpwards("TakeDamage", attackDamage);
+                    GameObject go = col.gameObject;
+                    go.SendMessageUpwards("TakeDamage", attackDamage);
+
+                    damageText.gameObject.SetActive(true);
+                    damageText.text = attackDamage.ToString() + " damage!";
+                    StartCoroutine(WaitToRemoveDamageText());
                 }
-                print(col.gameObject.name);
             }
 
             canAttack = false;
@@ -171,6 +178,12 @@ public class PlayerAttack : MonoBehaviour
     {
         yield return new WaitForSeconds(0.7f);
         isAttacking = false;
+    }
+
+    IEnumerator WaitToRemoveDamageText()
+    {
+        yield return new WaitForSeconds(2);
+        damageText.gameObject.SetActive(false);
     }
     #endregion
 
