@@ -8,15 +8,19 @@ public class MushroomEnemy : MonoBehaviour
     #region Fields
 
     [Header("References")]
-    public Animator animator;
     public Player player;
     public NavMeshAgent agent;
     public MushroomMon_Ani_Test anim;
+    public Transform attackPoint;
+    public LayerMask playerLayer;
 
     [Header("Gameplay and spec")]
     public float health;
     public float attackDamage;
-    public float moveSpeed;
+    public float attackRange;
+
+    public bool canAttack;
+    public bool isDead;
 
     [Header("State")]
     public States state;
@@ -30,7 +34,6 @@ public class MushroomEnemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        animator = GetComponent<Animator>();
         player = FindObjectOfType<Player>();
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<MushroomMon_Ani_Test>();
@@ -42,6 +45,11 @@ public class MushroomEnemy : MonoBehaviour
     {
         CheckState();
         CheckDistance();
+
+        if (health <= 0)
+        {
+            Die();
+        }
     }
 
     private void CheckDistance()
@@ -75,5 +83,59 @@ public class MushroomEnemy : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    private void Attack()
+    {
+        canAttack = false;
+
+        anim.AttackAni();
+
+        Collider[] hitObjects = Physics.OverlapSphere(attackPoint.position, attackRange, playerLayer);
+
+        foreach (Collider col in hitObjects)
+        {
+            if (col.gameObject.CompareTag("Player"))
+            {
+                col.gameObject.SendMessageUpwards("TakeDamage", attackDamage);
+            }
+        }
+
+        StartCoroutine(WaitToResetAttack());
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        anim.DamageAni();
+    }
+
+    private void Die()
+    {
+        isDead = true;
+        FindObjectOfType<AudioManager>().Play("MushroomDeath");
+        player.GiveXP(10);
+        anim.DeathAni();
+        Destroy(gameObject);
+    }
+
+    IEnumerator WaitToResetAttack()
+    {
+        yield return new WaitForSeconds(2);
+
+        canAttack = true;
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player") && canAttack && !isDead)
+        {
+            Attack();
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 }

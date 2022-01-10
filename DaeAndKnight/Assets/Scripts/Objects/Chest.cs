@@ -10,7 +10,6 @@ public class Chest : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        print(collision.gameObject.name);
         if (collision.gameObject.CompareTag("Player") && !collected)
         {
             collected = true;
