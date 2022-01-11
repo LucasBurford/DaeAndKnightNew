@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Forest : MonoBehaviour
 {
+    public GameObject fairyPrefab;
+
+    public float fairySpawnChance;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -13,7 +17,11 @@ public class Forest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Random.Range(0, fairySpawnChance) == 1)
+        {
+            Vector3 rand = new Vector3(Random.Range(-8, -48), -9, -100);
+            Instantiate(fairyPrefab, rand, Quaternion.identity);
+        }
     }
 
     private void OnCollisionStay(Collision collision)
