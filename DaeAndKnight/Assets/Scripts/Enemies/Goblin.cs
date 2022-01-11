@@ -12,6 +12,7 @@ public class Goblin : MonoBehaviour
     public Animator animator;
     public Transform attackPoint;
     public LayerMask playerLayer;
+    public Collider col;
 
     [Header("Gameplay and spec")]
     public float health;
@@ -20,6 +21,7 @@ public class Goblin : MonoBehaviour
 
     public bool canAttack;
     public bool isTouchingPlayer;
+    public bool isDead;
 
     [Header("State")]
     public States state;
@@ -40,6 +42,7 @@ public class Goblin : MonoBehaviour
         player = FindObjectOfType<Player>();
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        col = GetComponent<Collider>();
     }
 
     // Update is called once per frame
@@ -47,6 +50,11 @@ public class Goblin : MonoBehaviour
     {
         CheckDistance();
         CheckState();
+
+        if (health <= 0)
+        {
+            Die();
+        }
     }
 
     private void CheckState()
@@ -87,22 +95,25 @@ public class Goblin : MonoBehaviour
 
     private void Attack()
     {
-        animator.SetBool("idle01", false);
-        animator.SetBool("attack01", true);
-
-        Collider[] hitObjects = Physics.OverlapSphere(attackPoint.position, attackRange, playerLayer);
-
-        foreach(Collider col in hitObjects)
+        if (!isDead)
         {
-            if (col.gameObject.CompareTag("Player"))
-            {
-                GameObject go = col.gameObject;
-                go.SendMessageUpwards("TakeDamage", attackDamage);
-                StartCoroutine(WaitToResetAttack());
-            }
-        }
+            animator.SetBool("idle01", false);
+            animator.SetBool("attack01", true);
 
-        StartCoroutine(WaitToResetAttackAnimation());
+            Collider[] hitObjects = Physics.OverlapSphere(attackPoint.position, attackRange, playerLayer);
+
+            foreach (Collider col in hitObjects)
+            {
+                if (col.gameObject.CompareTag("Player"))
+                {
+                    GameObject go = col.gameObject;
+                    go.SendMessageUpwards("TakeDamage", attackDamage);
+                    StartCoroutine(WaitToResetAttack());
+                }
+            }
+
+            StartCoroutine(WaitToResetAttackAnimation());
+        }
     }
 
     private void CheckDistance()
@@ -115,6 +126,33 @@ public class Goblin : MonoBehaviour
         {
             state = States.Idle;
         }
+    }
+
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        FindObjectOfType<AudioManager>().Play("GoblinHurt");
+
+    }
+
+    private void Die()
+    {
+        isDead = true;
+        FindObjectOfType<AudioManager>().Play("GoblinDeath");
+        animator.SetBool("idle01", false);
+        animator.SetBool("attack01", false);
+        animator.SetBool("run", false);
+        animator.SetBool("dead", true);
+        col.isTrigger = true;
+        StartCoroutine(WaitToDestroy());
+    }
+
+    IEnumerator WaitToDestroy()
+    {
+        yield return new WaitForSeconds(2);
+        player.GiveXP(10);
+        Destroy(gameObject);
     }
 
     IEnumerator WaitToAttack()
