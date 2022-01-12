@@ -112,6 +112,7 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
             {
                 transform.Translate(0, 0, dashForce);
+                FindObjectOfType<AudioManager>().Play("Dash");
                 canDash = false;
                 StartCoroutine(WaitToResetDash());
             }
