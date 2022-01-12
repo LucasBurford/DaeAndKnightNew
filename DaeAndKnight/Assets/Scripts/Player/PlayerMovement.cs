@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public GameManager gameManager;
     public CharacterController controller;
     public Animator animator;
+    public Rigidbody rb;
     #endregion
 
     #region Gameplay and spec
@@ -21,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
     public float gravity = 9.81f;
     public float jumpSpeed = 3.5f;
     public float doubleJumpMultiplier = 0.5f;
+    public float dashForce;
 
     private float directionY;
 
@@ -33,6 +35,10 @@ public class PlayerMovement : MonoBehaviour
     // Decide if player can double jump
     public bool hasDoubleJump;
     public bool canDoubleJump;
+
+    // Decide if player can dash
+    public bool hasDash;
+    public bool canDash;
     #endregion
 
     #endregion
@@ -47,7 +53,7 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        #region Movement
+        #region Movement and Jump
         // Get input
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
@@ -99,10 +105,29 @@ public class PlayerMovement : MonoBehaviour
 
         animator.SetBool("KnightIsRunning", knightIsRunning);
         #endregion
+
+        #region Dash
+        if (hasDash)
+        {
+            if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
+            {
+                transform.Translate(0, 0, dashForce);
+                canDash = false;
+                StartCoroutine(WaitToResetDash());
+            }
+        }
+        #endregion
+
         // Only move knight if time of day is night
         if (gameManager.timeOfDay == GameManager.TimeOfDay.Night)
         {
 
         }
+    }
+
+    IEnumerator WaitToResetDash()
+    {
+        yield return new WaitForSeconds(2.5f);
+        canDash = true;
     }
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SimpleRotate : MonoBehaviour
 {
+    public float amount;
+
     public bool x;
     public bool y;
     public bool z;
@@ -13,15 +15,15 @@ public class SimpleRotate : MonoBehaviour
     {
         if (x)
         {
-            transform.Rotate(3, 0, 0);
+            transform.Rotate(amount, 0, 0);
         }
         if (y)
         {
-            transform.Rotate(0, 3, 0);
+            transform.Rotate(0, amount, 0);
         }
         if (z)
         {
-            transform.Rotate(0, 0, 3);
+            transform.Rotate(0, 0, amount);
         }
     }
 }
