@@ -6,7 +6,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Moat10x10W100H100
+  m_Name: Plane10x10W100H100
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

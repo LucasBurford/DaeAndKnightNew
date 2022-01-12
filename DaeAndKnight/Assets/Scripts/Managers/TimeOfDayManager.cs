@@ -10,6 +10,7 @@ public class TimeOfDayManager : MonoBehaviour
     public GameManager gameManager;
     public Light sun;
     public Skybox currentBox;
+    public GameObject sunMoon;
 
     #endregion
 
@@ -25,9 +26,15 @@ public class TimeOfDayManager : MonoBehaviour
         
     }
 
-    public void ChangeLightSetting(float newIntensity, Material newBox)
+    public void ChangeLightSetting(float newIntensity, Material newBox, Material newMat)
     {
         sun.intensity = newIntensity;
         RenderSettings.skybox = newBox;
+        sunMoon.GetComponent<MeshRenderer>().material = newMat;
+    }
+
+    public void ChangeObjectSize(Vector3 newSize)
+    {
+        sunMoon.transform.localScale = newSize;
     }
 }

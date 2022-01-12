@@ -11,11 +11,15 @@ public class GameManager : MonoBehaviour
     public TimeOfDayManager timeOfDayManager;
     public Material dayBox;
     public Material nightBox;
+    public Material sunMat;
+    public Material moonMat;
 
     #region Gameplay and spec
     [Header("Gameplay and spec")]
     public float dayIntensity;
     public float nightIntensity;
+    public Vector3 sunSize;
+    public Vector3 moonSize;
 
     public TimeOfDay timeOfDay;
     public enum TimeOfDay
@@ -30,7 +34,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        FindObjectOfType<AudioManager>().Play("NewArea");
     }
 
     // Update is called once per frame
@@ -46,13 +50,15 @@ public class GameManager : MonoBehaviour
         {
             case TimeOfDay.Day:
                 {
-                    timeOfDayManager.ChangeLightSetting(dayIntensity, dayBox);
+                    timeOfDayManager.ChangeLightSetting(dayIntensity, dayBox, sunMat);
+                    timeOfDayManager.ChangeObjectSize(sunSize);
                 }
                 break;
 
             case TimeOfDay.Night:
                 {
-                    timeOfDayManager.ChangeLightSetting(nightIntensity, nightBox);
+                    timeOfDayManager.ChangeLightSetting(nightIntensity, nightBox, moonMat);
+                    timeOfDayManager.ChangeObjectSize(moonSize);
                 }
                 break;
         }

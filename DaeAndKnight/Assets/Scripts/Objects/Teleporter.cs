@@ -12,11 +12,9 @@ public class Teleporter : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            GameObject go = other.gameObject;
-
             if (Input.GetKeyDown(KeyCode.W))
             {
-                go.transform.position = target.gameObject.transform.position;
+                other.gameObject.transform.position = target.gameObject.transform.position;
                 FindObjectOfType<AudioManager>().Play("Teleport");
             }
         }
