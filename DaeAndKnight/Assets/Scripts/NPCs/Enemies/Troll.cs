@@ -12,6 +12,7 @@ public class Troll : MonoBehaviour
     public Animator animator;
     public Transform attackPoint;
     public LayerMask playerLayer;
+    public Collider col;
 
     [Header("Gameplay and spec")]
     public float health;
@@ -20,6 +21,7 @@ public class Troll : MonoBehaviour
 
     public bool isTouchingPlayer;
     public bool canAttack;
+    public bool isDead;
     #endregion
 
     // Start is called before the first frame update
@@ -28,6 +30,7 @@ public class Troll : MonoBehaviour
         player = FindObjectOfType<Player>();
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        col = GetComponent<Collider>();
     }
 
     // Update is called once per frame
@@ -41,6 +44,11 @@ public class Troll : MonoBehaviour
             {
                 Attack();
             }
+        }
+
+        if (health <= 0 && !isDead)
+        {
+            Die();
         }
     }
 
@@ -74,6 +82,24 @@ public class Troll : MonoBehaviour
         StartCoroutine(WaitToCastAttack());
         StartCoroutine(WaitToResetAttackAnimation());
         StartCoroutine(WaitToResetAttack());
+    }
+
+    private void TakeDamage(float damage)
+    {
+        health -= damage;
+        FindObjectOfType<AudioManager>().Play("TrollHurt");
+        animator.SetBool("TookDamage", true);
+        col.isTrigger = true;
+        StartCoroutine(WaitToResetHurtAnimation());
+    }
+
+    private void Die()
+    {
+        isDead = true;
+        animator.SetTrigger("Dead");
+        agent.isStopped = true;
+        StartCoroutine(WaitToPlayFallSound());
+        StartCoroutine(WaitToDie());
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -120,6 +146,24 @@ public class Troll : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         animator.SetBool("Attack", false);
+    }
+
+    IEnumerator WaitToResetHurtAnimation()
+    {
+        yield return new WaitForSeconds(1);
+        animator.SetBool("TookDamage", false);
+    }
+
+    IEnumerator WaitToPlayFallSound()
+    {
+        yield return new WaitForSeconds(1.5f);
+        FindObjectOfType<AudioManager>().Play("TrollFall");
+    }
+
+    IEnumerator WaitToDie()
+    {
+        yield return new WaitForSeconds(3);
+        Destroy(gameObject);
     }
 
     private void OnDrawGizmos()
