@@ -14,8 +14,6 @@ public class FlyingAnimal : MonoBehaviour
     {
         transform.Translate(0, 0, moveSpeed);
 
-        distance += 0.5f;
-
         if (Vector3.Distance(transform.position, startPos) > distance)
         {
             Respawn();
