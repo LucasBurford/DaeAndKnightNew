@@ -5,16 +5,19 @@ using UnityEngine;
 public class ForestFairy : MonoBehaviour
 {
     public float moveSpeed;
+    public float bonusChance;
 
     // Start is called before the first frame update
     void Start()
     {
         FindObjectOfType<AudioManager>().Play("FairyFlyby");
 
-        if (Random.Range(0, 25) == 1)
+        if (Random.Range(0, bonusChance) == 1)
         {
             FindObjectOfType<Player>().health += 15;
         }
+
+        StartCoroutine(WaitToDestroy());
     }
 
     // Update is called once per frame
@@ -26,6 +29,7 @@ public class ForestFairy : MonoBehaviour
     IEnumerator WaitToDestroy()
     {
         yield return new WaitForSeconds(6);
+        FindObjectOfType<FairySpawner>().numberActive--;
         Destroy(gameObject);
     }
 }
