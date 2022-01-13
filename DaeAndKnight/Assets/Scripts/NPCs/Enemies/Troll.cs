@@ -95,9 +95,9 @@ public class Troll : MonoBehaviour
 
     private void Die()
     {
+        agent.isStopped = true;
         isDead = true;
         animator.SetTrigger("Dead");
-        agent.isStopped = true;
         StartCoroutine(WaitToPlayFallSound());
         StartCoroutine(WaitToDie());
     }

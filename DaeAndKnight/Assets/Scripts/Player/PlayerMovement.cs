@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     public CharacterController controller;
     public Animator animator;
     public Rigidbody rb;
+    public AudioSource runningAudio;
     #endregion
 
     #region Gameplay and spec
@@ -39,6 +40,8 @@ public class PlayerMovement : MonoBehaviour
     // Decide if player can dash
     public bool hasDash;
     public bool canDash;
+
+    public bool isPlaying;
     #endregion
 
     #endregion
@@ -103,6 +106,18 @@ public class PlayerMovement : MonoBehaviour
             knightIsRunning = false;
         }
 
+        if (knightIsRunning)
+        {
+            if (!runningAudio.isPlaying && controller.isGrounded)
+            {
+                runningAudio.Play();
+            }
+        }
+        else
+        {
+            runningAudio.Stop();
+        }
+
         animator.SetBool("KnightIsRunning", knightIsRunning);
         #endregion
 
@@ -118,6 +133,8 @@ public class PlayerMovement : MonoBehaviour
             }
         }
         #endregion
+
+        // Play running sound effect
 
         // Only move knight if time of day is night
         if (gameManager.timeOfDay == GameManager.TimeOfDay.Night)

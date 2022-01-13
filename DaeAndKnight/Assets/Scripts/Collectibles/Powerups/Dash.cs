@@ -11,6 +11,7 @@ public class Dash : MonoBehaviour
             FindObjectOfType<PlayerMovement>().hasDash = true;
             FindObjectOfType<PlayerMovement>().canDash = true;
             FindObjectOfType<ItemAcquired>().AcquiredItem("Dash", "L Shift");
+            Destroy(gameObject);
         }
     }
 }
