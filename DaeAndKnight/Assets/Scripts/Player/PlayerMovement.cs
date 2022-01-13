@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     public CharacterController controller;
     public Animator animator;
     public Rigidbody rb;
+    public ParticleSystem ps;
     public AudioSource runningAudio;
     #endregion
 
@@ -63,6 +64,7 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 direction = new Vector3(0, verticalInput, horizontalInput);
 
+        #region Jump
         if (controller.isGrounded)
         {
             canDoubleJump = true;
@@ -85,12 +87,14 @@ public class PlayerMovement : MonoBehaviour
 
         directionY -= gravity * Time.deltaTime;
         direction.y = directionY;
+        #endregion
 
         if (canMove)
         {
             controller.Move(direction * knightMoveSpeed * Time.deltaTime);
         }
 
+        #region Misc
         if (Input.GetKey(KeyCode.A))
         {
             transform.rotation = new Quaternion(0, 180, 0, 1);
@@ -105,7 +109,9 @@ public class PlayerMovement : MonoBehaviour
         {
             knightIsRunning = false;
         }
+        #endregion
 
+        #region Running audio
         if (knightIsRunning)
         {
             if (!runningAudio.isPlaying && controller.isGrounded)
@@ -117,8 +123,6 @@ public class PlayerMovement : MonoBehaviour
         {
             runningAudio.Stop();
         }
-
-        animator.SetBool("KnightIsRunning", knightIsRunning);
         #endregion
 
         #region Dash
@@ -126,15 +130,28 @@ public class PlayerMovement : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
             {
-                transform.Translate(0, 0, dashForce);
+                Vector3 dash = new Vector3(0, 0, 0);
+
+                if (direction.z > 0)
+                {
+                    dash = new Vector3(0, 0, dashForce);
+                }
+                else if (direction.z < 0)
+                {
+                    dash = new Vector3(0, 0, -dashForce);
+                }
+                
+                controller.SimpleMove(dash);
                 FindObjectOfType<AudioManager>().Play("Dash");
                 canDash = false;
+                ps.Play();
+                StartCoroutine(WaitToStopParticleSystem());
                 StartCoroutine(WaitToResetDash());
             }
         }
         #endregion
-
-        // Play running sound effect
+        animator.SetBool("KnightIsRunning", knightIsRunning);
+        #endregion
 
         // Only move knight if time of day is night
         if (gameManager.timeOfDay == GameManager.TimeOfDay.Night)
@@ -147,5 +164,11 @@ public class PlayerMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(2.5f);
         canDash = true;
+    }
+
+    IEnumerator WaitToStopParticleSystem()
+    {
+        yield return new WaitForSeconds(0.5f);
+        ps.Stop();
     }
 }
