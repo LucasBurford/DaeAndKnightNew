@@ -8,6 +8,11 @@ public class Chest : MonoBehaviour
     public GameObject gold;
     public bool collected;
 
+    private void Start()
+    {
+        player = FindObjectOfType<Player>();
+    }
+
     private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.CompareTag("Player") && !collected)
