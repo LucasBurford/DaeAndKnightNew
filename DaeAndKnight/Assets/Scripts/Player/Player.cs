@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     public TMP_Text givexpText;
     public TMP_Text goldText;
     public TMP_Text pressToTeleportText;
+    public TMP_Text healthPotionsText;
 
     public Slider healthSlider;
     public Slider staminaSlider;
@@ -24,6 +25,9 @@ public class Player : MonoBehaviour
     public int xp;
     public int level;
     public int gold;
+
+    public int healthPotions;
+    public float healFactor;
 
     public bool isBlocking;
     public bool gotHit;
@@ -43,6 +47,7 @@ public class Player : MonoBehaviour
         CheckValues();
         CheckLevel();
         SetAnimatorValues();
+        GetInput();
 
         if (canRechargeStamina)
         {
@@ -89,6 +94,33 @@ public class Player : MonoBehaviour
     public void GiveGold(int amount)
     {
         gold += amount;
+    }
+
+    public void GiveHealthPotion()
+    {
+        healthPotions++;
+    }
+
+    private void UseHealthPotion()
+    {
+        health += healFactor;
+        healthPotions--;
+        FindObjectOfType<AudioManager>().Play("PlayerHeal");
+    }
+
+    private void GetInput()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            if (healthPotions > 0)
+            {
+                UseHealthPotion();
+            }
+            else
+            {
+                print("No more health potions!");
+            }
+        }
     }
 
     private void CheckValues()
@@ -154,6 +186,7 @@ public class Player : MonoBehaviour
         staminaSlider.value = stamina;
         levelText.text = level.ToString();
         goldText.text = gold.ToString();
+        healthPotionsText.text = healthPotions.ToString();
     }
 
     #region Coroutines
@@ -164,6 +197,7 @@ public class Player : MonoBehaviour
 
         canRechargeStamina = true;
     }
+
     IEnumerator WaitToRemoveGiveXPText()
     {
         yield return new WaitForSeconds(1.5f);
