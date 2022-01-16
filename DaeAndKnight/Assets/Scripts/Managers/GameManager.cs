@@ -8,7 +8,11 @@ public class GameManager : MonoBehaviour
 
     #region References
     [Header("References")]
+    public Player player;
     public TimeOfDayManager timeOfDayManager;
+    public GameObject castleObject;
+    public GameObject darkForestObject;
+    public GameObject alchemyLab;
     public Material dayBox;
     public Material nightBox;
     public Material sunMat;
@@ -18,6 +22,17 @@ public class GameManager : MonoBehaviour
     [Header("Gameplay and spec")]
     public float dayIntensity;
     public float nightIntensity;
+
+    // Distance between player and object before it is disabled
+    public float distanceToBeGreaterThanDarkForest;
+    // Current actual distance between player and object during runtime
+    public float distanceBetweenPlayerAndDarkForest;    
+    
+    // Distance between player and object before it is disabled
+    public float distanceToBeGreaterThanCastle;
+    // Current actual distance between player and object during runtime
+    public float distanceBetweenPlayerAndCastle;
+
     public Vector3 sunSize;
     public Vector3 moonSize;
 
@@ -41,6 +56,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         CheckTimeOfDay();
+        //CheckDistanceToAreas();
         GetInput();
     }
 
@@ -62,6 +78,50 @@ public class GameManager : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    private void CheckDistanceToAreas()
+    {
+        if (darkForestObject.activeInHierarchy)
+        {
+             distanceBetweenPlayerAndDarkForest = Vector3.Distance(player.transform.position, darkForestObject.transform.position);
+        }
+        else
+        {
+            distanceBetweenPlayerAndDarkForest = 0;
+        }
+
+        if (castleObject.activeInHierarchy)
+        {
+            distanceBetweenPlayerAndCastle = Vector3.Distance(player.transform.position, castleObject.transform.position);
+        }
+        else
+        {
+            distanceBetweenPlayerAndCastle = 0;
+        }
+
+        if (distanceBetweenPlayerAndDarkForest > distanceToBeGreaterThanDarkForest)
+        {
+            Areas(darkForestObject, false);
+        }
+        if (distanceBetweenPlayerAndDarkForest < distanceToBeGreaterThanDarkForest)
+        {
+            Areas(darkForestObject, true);
+        }
+
+        if (distanceBetweenPlayerAndCastle > distanceToBeGreaterThanCastle)
+        {
+            Areas(castleObject, false);
+        }
+        else
+        {
+            Areas(castleObject, true);
+        }
+    }
+
+    private void Areas(GameObject area, bool active)
+    {
+        area.SetActive(active);
     }
 
     private void GetInput()

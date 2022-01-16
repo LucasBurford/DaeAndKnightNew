@@ -31,6 +31,6 @@ public class LeafSpawner : MonoBehaviour
     {
         numberActive++;
         Vector3 spawn = new Vector3(x, y, Random.Range(minZ, maxZ));
-        Instantiate(prefab, spawn, Quaternion.identity);
+        Instantiate(prefab, spawn, Quaternion.identity, transform.parent);
     }
 }

@@ -12,12 +12,15 @@ public class FallingLeaf : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        FallDown();
-
-        if (distanceTravelled >= maxDistance)
+        if (gameObject.activeInHierarchy)
         {
-            FindObjectOfType<LeafSpawner>().numberActive--;
-            Destroy(gameObject);
+            FallDown();
+
+            if (distanceTravelled >= maxDistance)
+            {
+                FindObjectOfType<LeafSpawner>().numberActive--;
+                Destroy(gameObject);
+            }
         }
     }
 

@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class SimpleBob : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
-        
+        float y = Mathf.PingPong(Time.time, 1);
+
+        transform.Translate(0, y, 0);
     }
 }
+
