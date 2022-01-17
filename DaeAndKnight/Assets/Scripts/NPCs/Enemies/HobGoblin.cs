@@ -41,7 +41,7 @@ public class HobGoblin : MonoBehaviour
 
         if (isTouchingPlayer)
         {
-            if (canAttack)
+            if (canAttack && !isDead)
             {
                 Attack();
             }
@@ -90,7 +90,6 @@ public class HobGoblin : MonoBehaviour
         health -= damage;
         FindObjectOfType<AudioManager>().Play("GoblinHurt");
         animator.SetBool("TookDamage", true);
-        col.isTrigger = true;
         StartCoroutine(WaitToResetHurtAnimation());
     }
 
@@ -98,6 +97,7 @@ public class HobGoblin : MonoBehaviour
     {
         agent.isStopped = true;
         isDead = true;
+        col.isTrigger = true;
         animator.SetTrigger("Dead");
         if (!deathAudioPlayed)
         {

@@ -40,7 +40,7 @@ public class Troll : MonoBehaviour
 
         if (isTouchingPlayer)
         {
-            if (canAttack)
+            if (canAttack && !isDead)
             {
                 Attack();
             }
@@ -89,7 +89,6 @@ public class Troll : MonoBehaviour
         health -= damage;
         FindObjectOfType<AudioManager>().Play("TrollHurt");
         animator.SetBool("TookDamage", true);
-        col.isTrigger = true;
         StartCoroutine(WaitToResetHurtAnimation());
     }
 
@@ -97,6 +96,7 @@ public class Troll : MonoBehaviour
     {
         agent.isStopped = true;
         isDead = true;
+        col.isTrigger = true;
         animator.SetTrigger("Dead");
         StartCoroutine(WaitToPlayFallSound());
         StartCoroutine(WaitToDie());

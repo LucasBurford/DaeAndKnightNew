@@ -45,7 +45,7 @@ public class Zombie : MonoBehaviour
         if (isTouchingPlayer)
         {
             agent.speed = 0;
-            if (canAttack)
+            if (canAttack && !isDead)
             {
                 Attack();
             }
@@ -106,8 +106,7 @@ public class Zombie : MonoBehaviour
         health -= damage;
         FindObjectOfType<AudioManager>().Play("ZombieHurt");
         //animator.SetBool("TookDamage", true);
-        col.isTrigger = true;
-        StartCoroutine(WaitToResetHurtAnimation());
+        //StartCoroutine(WaitToResetHurtAnimation());
     }
 
     private void Die()
@@ -120,6 +119,7 @@ public class Zombie : MonoBehaviour
             deathAudioPlayed = true;
             FindObjectOfType<AudioManager>().Play("ZombieDeath");
         }
+        col.isTrigger = true;
         player.GiveXP(10);
         StartCoroutine(WaitToDie());
     }
