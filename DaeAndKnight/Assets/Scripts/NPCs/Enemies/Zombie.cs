@@ -22,6 +22,7 @@ public class Zombie : MonoBehaviour
 
     public bool isTouchingPlayer;
     public bool canAttack;
+    public bool isAttacking;
     public bool isDead;
     public bool deathAudioPlayed;
     #endregion
@@ -43,10 +44,19 @@ public class Zombie : MonoBehaviour
 
         if (isTouchingPlayer)
         {
+            agent.speed = 0;
             if (canAttack)
             {
                 Attack();
             }
+        }
+        else if (!isTouchingPlayer && CheckDistance() >= 5)
+        {
+            agent.speed = moveSpeed;
+        }
+        else
+        {
+            agent.isStopped = true;
         }
 
         if (health <= 0 && !isDead)
@@ -55,7 +65,7 @@ public class Zombie : MonoBehaviour
         }
     }
 
-    private void CheckDistance()
+    private float CheckDistance()
     {
         float distance = Vector3.Distance(transform.position, player.transform.position);
 
@@ -65,7 +75,7 @@ public class Zombie : MonoBehaviour
             agent.SetDestination(player.transform.position);
             animator.SetFloat("MoveSpeed", agent.speed);
         }
-        else if (distance > 10)
+        else if (distance > 10 && !isAttacking)
         {
             agent.isStopped = true;
             animator.SetFloat("MoveSpeed", 0);
@@ -74,10 +84,14 @@ public class Zombie : MonoBehaviour
         {
             animator.SetFloat("MoveSpeed", 0);
         }
+
+        return distance;
     }
 
     private void Attack()
     {
+        isAttacking = true;
+
         animator.SetBool("Attack", true);
 
         canAttack = false;
@@ -90,8 +104,8 @@ public class Zombie : MonoBehaviour
     private void TakeDamage(float damage)
     {
         health -= damage;
-        FindObjectOfType<AudioManager>().Play("GoblinHurt");
-        animator.SetBool("TookDamage", true);
+        FindObjectOfType<AudioManager>().Play("ZombieHurt");
+        //animator.SetBool("TookDamage", true);
         col.isTrigger = true;
         StartCoroutine(WaitToResetHurtAnimation());
     }
@@ -104,8 +118,9 @@ public class Zombie : MonoBehaviour
         if (!deathAudioPlayed)
         {
             deathAudioPlayed = true;
-            FindObjectOfType<AudioManager>().Play("GoblinDeath");
+            FindObjectOfType<AudioManager>().Play("ZombieDeath");
         }
+        player.GiveXP(10);
         StartCoroutine(WaitToDie());
     }
 
@@ -146,6 +161,7 @@ public class Zombie : MonoBehaviour
     IEnumerator WaitToResetAttack()
     {
         yield return new WaitForSeconds(3);
+        isAttacking = false;
         canAttack = true;
     }
 
@@ -158,7 +174,7 @@ public class Zombie : MonoBehaviour
     IEnumerator WaitToResetHurtAnimation()
     {
         yield return new WaitForSeconds(1);
-        animator.SetBool("TookDamage", false);
+        //animator.SetBool("TookDamage", false);
     }
 
     IEnumerator WaitToDie()
