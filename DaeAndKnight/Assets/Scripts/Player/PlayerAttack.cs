@@ -23,6 +23,7 @@ public class PlayerAttack : MonoBehaviour
     public int criticalChance;
     public int comboCounter;
 
+    public float attackResetTime;
     public float attackDamage;
     public float attackRange;
 
@@ -207,7 +208,7 @@ public class PlayerAttack : MonoBehaviour
     #region Coroutines
     IEnumerator WaitToResetAttack()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(attackResetTime);
 
         if (justHadCritical)
         {

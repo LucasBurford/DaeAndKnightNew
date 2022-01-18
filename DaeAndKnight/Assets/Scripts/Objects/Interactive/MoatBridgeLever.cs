@@ -5,6 +5,8 @@ using TMPro;
 
 public class MoatBridgeLever : MonoBehaviour
 {
+    public Vector3 newPos;
+
     public GameObject bridge;
 
     public TMP_Text useText;

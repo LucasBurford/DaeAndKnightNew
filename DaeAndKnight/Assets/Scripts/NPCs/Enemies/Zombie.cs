@@ -44,19 +44,12 @@ public class Zombie : MonoBehaviour
 
         if (isTouchingPlayer)
         {
-            agent.speed = 0;
+            agent.isStopped = true;
+
             if (canAttack && !isDead)
             {
                 Attack();
             }
-        }
-        else if (!isTouchingPlayer && CheckDistance() >= 5)
-        {
-            agent.speed = moveSpeed;
-        }
-        else
-        {
-            agent.isStopped = true;
         }
 
         if (health <= 0 && !isDead)
@@ -75,13 +68,9 @@ public class Zombie : MonoBehaviour
             agent.SetDestination(player.transform.position);
             animator.SetFloat("MoveSpeed", agent.speed);
         }
-        else if (distance > 10 && !isAttacking)
+        else
         {
             agent.isStopped = true;
-            animator.SetFloat("MoveSpeed", 0);
-        }
-        else if (distance <= 1)
-        {
             animator.SetFloat("MoveSpeed", 0);
         }
 
