@@ -21,6 +21,8 @@ public class PlayerAttack : MonoBehaviour
     #region Gameplay and spec
     [Header("Gameplay and soec")]
     public int criticalChance;
+    public int comboCounter;
+
     public float attackDamage;
     public float attackRange;
 
@@ -43,7 +45,7 @@ public class PlayerAttack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        animator.SetBool("IsAttacking", isAttacking);
+        //animator.SetBool("IsAttacking", isAttacking);
 
         GetInput();   
     }
@@ -54,6 +56,24 @@ public class PlayerAttack : MonoBehaviour
         if (Input.GetButtonDown("Fire1") && canAttack)
         {
             isAttacking = true;
+
+            comboCounter++;
+
+            if (comboCounter == 1)
+            {
+                animator.SetBool("IsAttacking", isAttacking);
+            } 
+            else if (comboCounter == 2)
+            {
+                animator.SetBool("IsAttacking", isAttacking);
+            } 
+            else if (comboCounter == 3)
+            {
+                animator.SetBool("IsAttacking2", isAttacking);
+                attackDamage += 10;
+            }
+
+            PlayPlayerAttackSound(comboCounter);
             StartCoroutine(WaitToResetAttackAnimation());
 
             int generateCritical = Random.Range(1, criticalChance);
@@ -160,6 +180,30 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+    private void PlayPlayerAttackSound(int number)
+    {
+        switch (number)
+        {
+            case 1:
+                {
+                    FindObjectOfType<AudioManager>().Play("PlayerAttack1");
+                }
+                break;
+
+            case 2:
+                {
+                    FindObjectOfType<AudioManager>().Play("PlayerAttack2");
+                }
+                break;
+
+            case 3:
+                {
+                    FindObjectOfType<AudioManager>().Play("PlayerAttack3");
+                }
+                break;
+        }
+    }
+
     #region Coroutines
     IEnumerator WaitToResetAttack()
     {
@@ -178,6 +222,16 @@ public class PlayerAttack : MonoBehaviour
     {
         yield return new WaitForSeconds(0.7f);
         isAttacking = false;
+        if (comboCounter == 3)
+        {
+            animator.SetBool("IsAttacking2", isAttacking);
+            attackDamage -= 10;
+            comboCounter = 0;
+        }
+        else
+        {
+            animator.SetBool("IsAttacking", isAttacking);
+        }
     }
 
     IEnumerator WaitToRemoveDamageText()
