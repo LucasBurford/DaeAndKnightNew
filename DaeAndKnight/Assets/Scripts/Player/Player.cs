@@ -19,7 +19,10 @@ public class Player : MonoBehaviour
     public Slider healthSlider;
     public Slider staminaSlider;
 
-    public float health;
+    public Vector3 checkpoint;
+
+    public float maxHealth;
+    public float currentHealth;
     public float stamina;
     public float staminaRechargeRate;
     public int xp;
@@ -33,11 +36,12 @@ public class Player : MonoBehaviour
     public bool gotHit;
     public bool isStunned;
     public bool canRechargeStamina;
+    public bool deathAudioPlayed;
 
     // Start is called before the first frame update
     void Start()
     {
-       
+        currentHealth = maxHealth;
     }
 
     // Update is called once per frame
@@ -75,7 +79,7 @@ public class Player : MonoBehaviour
         else
         {
             FindObjectOfType<AudioManager>().Play("KnightHurt");
-            health -= damage / 2; // For some reason TakeDamage is being called twice and I can't figure out why
+            currentHealth -= damage / 2; // For some reason TakeDamage is being called twice and I can't figure out why
                                   // So for time being, divide incoming damage by 2 to keep normal damage figures
         }
         gotHit = true;
@@ -101,9 +105,21 @@ public class Player : MonoBehaviour
         healthPotions++;
     }
 
+    public void SetCheckpoint(Vector3 newCheckpoint)
+    {
+        print("Checkpoint set at " + newCheckpoint);
+        checkpoint = newCheckpoint;
+    }
+
+    public void Respawn()
+    {
+        transform.position = new Vector3(0, 1, -5);
+        currentHealth = maxHealth;
+    }
+
     private void UseHealthPotion()
     {
-        health += healFactor;
+        currentHealth += healFactor;
         healthPotions--;
         FindObjectOfType<AudioManager>().Play("PlayerHeal");
     }
@@ -125,7 +141,7 @@ public class Player : MonoBehaviour
 
     private void CheckValues()
     {
-        if (health <= 0)
+        if (currentHealth <= 0)
         {
             Die();
         }
@@ -162,7 +178,13 @@ public class Player : MonoBehaviour
 
     private void Die()
     {
-        animator.Play("Die");
+        if (!deathAudioPlayed)
+        {
+            deathAudioPlayed = true;
+            FindObjectOfType<AudioManager>().Play("PlayerDeath");
+        }
+        animator.SetBool("IsDead", true);
+        StartCoroutine(WaitToRespawn());
     }
 
     private void CheckLevel()
@@ -182,7 +204,7 @@ public class Player : MonoBehaviour
 
     private void UpdateUI()
     {
-        healthSlider.value = health;
+        healthSlider.value = currentHealth;
         staminaSlider.value = stamina;
         levelText.text = level.ToString();
         goldText.text = gold.ToString();
@@ -190,6 +212,14 @@ public class Player : MonoBehaviour
     }
 
     #region Coroutines
+
+    IEnumerator WaitToRespawn()
+    {
+        yield return new WaitForSeconds(2);
+        deathAudioPlayed = false;
+        animator.SetBool("IsDead", false);
+        Respawn();
+    }
 
     IEnumerator WaitToRechargeStamina()
     {

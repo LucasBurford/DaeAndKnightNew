@@ -14,7 +14,7 @@ public class ForestFairy : MonoBehaviour
 
         if (Random.Range(0, bonusChance) == 1)
         {
-            FindObjectOfType<Player>().health += 15;
+            FindObjectOfType<Player>().currentHealth += 15;
         }
 
         StartCoroutine(WaitToDestroy());
