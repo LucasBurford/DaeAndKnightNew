@@ -141,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
                     dash = new Vector3(0, 0, -dashForce);
                 }
                 
-                controller.SimpleMove(dash);
+                controller.Move(dash);
                 FindObjectOfType<AudioManager>().Play("Dash");
                 canDash = false;
                 ps.Play();
