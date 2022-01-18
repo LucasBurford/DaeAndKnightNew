@@ -113,6 +113,8 @@ public class Player : MonoBehaviour
 
     public void Respawn()
     {
+        animator.SetTrigger("Recover");
+        StartCoroutine(WaitToBackToIdle());
         transform.position = new Vector3(0, 1, -5);
         currentHealth = maxHealth;
     }
@@ -183,6 +185,7 @@ public class Player : MonoBehaviour
             deathAudioPlayed = true;
             FindObjectOfType<AudioManager>().Play("PlayerDeath");
         }
+        playerMovement.canMove = false;
         animator.SetBool("IsDead", true);
         StartCoroutine(WaitToRespawn());
     }
@@ -212,6 +215,12 @@ public class Player : MonoBehaviour
     }
 
     #region Coroutines
+    IEnumerator WaitToBackToIdle()
+    {
+        yield return new WaitForSeconds(2);
+        animator.SetTrigger("BackToIdle");
+        FindObjectOfType<PlayerMovement>().canMove = true;
+    }
 
     IEnumerator WaitToRespawn()
     {
