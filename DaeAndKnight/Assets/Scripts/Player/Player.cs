@@ -23,8 +23,11 @@ public class Player : MonoBehaviour
 
     public float maxHealth;
     public float currentHealth;
-    public float stamina;
+    public float maxStamina;
+    public float currentStamina;
     public float staminaRechargeRate;
+    public int healthUps;
+    public int staminaUps;
     public int xp;
     public int level;
     public int gold;
@@ -55,9 +58,9 @@ public class Player : MonoBehaviour
 
         if (canRechargeStamina)
         {
-            stamina += staminaRechargeRate;
+            currentStamina += staminaRechargeRate;
         }
-        if (stamina >= 100)
+        if (currentStamina >= maxStamina)
         {
             canRechargeStamina = false;
         }
@@ -73,7 +76,7 @@ public class Player : MonoBehaviour
         if (isBlocking)
         {
             FindObjectOfType<AudioManager>().Play("ShieldHit1");
-            stamina -= damage;
+            currentStamina -= damage;
             StartCoroutine(WaitToRechargeStamina());
         }
         else
@@ -126,6 +129,58 @@ public class Player : MonoBehaviour
         FindObjectOfType<AudioManager>().Play("PlayerHeal");
     }
 
+    public void CollectedHealthUp()
+    {
+        healthUps++;
+
+        int numLeft = 3 - healthUps;
+
+        FindObjectOfType<ItemAcquired>().AcquiredStatUp("Health Up", numLeft);
+
+        if (healthUps == 3)
+        {
+            IncreaseHealth();
+        }
+    }
+
+    private void IncreaseHealth()
+    {
+        maxHealth += 25;
+        currentHealth = maxHealth;
+        FindObjectOfType<ItemAcquired>().IncreaseStat("Health");
+        healthSlider.maxValue += 25;
+        RectTransform rt = healthSlider.GetComponent<RectTransform>();
+        rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rt.rect.size.x + 25);
+        healthSlider.transform.position = new Vector3(healthSlider.transform.position.x + 13, healthSlider.transform.position.y, healthSlider.transform.position.z);
+        healthUps = 0;
+    }
+
+    public void CollectedStaminaUp()
+    {
+        staminaUps++;
+
+        int numLeft = 3 - staminaUps;
+
+        FindObjectOfType<ItemAcquired>().AcquiredStatUp("Stamina Up", numLeft);
+
+        if (staminaUps == 3)
+        {
+            IncreaseStamina();
+        }
+    }
+
+    private void IncreaseStamina()
+    {
+        maxStamina += 25;
+        staminaSlider.maxValue += 25;
+        canRechargeStamina = true;
+        FindObjectOfType<ItemAcquired>().IncreaseStat("Stamina");
+        RectTransform rt = staminaSlider.GetComponent<RectTransform>();
+        rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, rt.rect.size.x + 25);
+        staminaSlider.transform.position = new Vector3(staminaSlider.transform.position.x + 13, staminaSlider.transform.position.y, healthSlider.transform.position.z);
+        staminaUps = 0;
+    }
+
     private void GetInput()
     {
         if (Input.GetKeyDown(KeyCode.F))
@@ -149,14 +204,14 @@ public class Player : MonoBehaviour
         }
 
         #region Stun
-        if (stamina <= 0)
+        if (currentStamina <= 0)
         {
             isStunned = true;
         }
-        else if (stamina >= 100)
+        else if (currentStamina >= maxStamina)
         {
             isStunned = false;
-            stamina = 100;
+            currentStamina = maxStamina;
         }
 
         if (isStunned)
@@ -208,7 +263,7 @@ public class Player : MonoBehaviour
     private void UpdateUI()
     {
         healthSlider.value = currentHealth;
-        staminaSlider.value = stamina;
+        staminaSlider.value = currentStamina;
         levelText.text = level.ToString();
         goldText.text = gold.ToString();
         healthPotionsText.text = healthPotions.ToString();

@@ -28,6 +28,46 @@ public class ItemAcquired : MonoBehaviour
         PlaySound();
     }
 
+    public void AcquiredStatUp(string itemName, int numLeft)
+    {
+        itemAcquiredText.gameObject.SetActive(true);
+
+        if (itemName == "Damage Up")
+        {
+            itemAcquiredText.text = "Damage Up acquired! Collect " + numLeft + " to increase attack damage!"; 
+        }
+        else if (itemName == "Stamina Up")
+        {
+            itemAcquiredText.text = "Stamina Up acquired! Collect " + numLeft + " more to increase stamina!";
+        }
+        else if (itemName == "Health Up")
+        {
+            itemAcquiredText.text = "Health Up acquired! Collect " + numLeft + " more to increase health!";
+        }
+
+        StartCoroutine(WaitToRemoveText());
+        PlaySound();
+    }
+
+    public void IncreaseStat(string statName)
+    {
+        if (statName == "Damage")
+        {
+            itemAcquiredText.text = "Attack damage increased!";
+        }
+        else if (statName == "Stamina")
+        {
+            itemAcquiredText.text = "Stamina increased!";
+        }
+        else if (statName == "Health")
+        {
+            itemAcquiredText.text = "Health increased!";
+        }
+
+        StartCoroutine(WaitToRemoveText());
+        PlaySound();
+    }
+
     private void PlaySound()
     {
         FindObjectOfType<AudioManager>().Play("ItemAcquired");

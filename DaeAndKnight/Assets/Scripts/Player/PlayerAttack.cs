@@ -22,6 +22,7 @@ public class PlayerAttack : MonoBehaviour
     [Header("Gameplay and soec")]
     public int criticalChance;
     public int comboCounter;
+    public int damageUps;
 
     public float attackResetTime;
     public float attackDamage;
@@ -131,6 +132,27 @@ public class PlayerAttack : MonoBehaviour
     {
         animator.SetBool("IsBlocking", isblocking);
         player.isBlocking = isblocking;
+    }
+
+    public void CollectedDamageUp()
+    {
+        damageUps++;
+
+        int numLeft = 3 - damageUps;
+
+        FindObjectOfType<ItemAcquired>().AcquiredStatUp("Damage Up", numLeft);
+
+        if (damageUps == 3)
+        {
+            IncreaseAttackDamage();
+        }
+    }
+
+    private void IncreaseAttackDamage()
+    {
+        attackDamage += 5;
+        damageUps = 0;
+        FindObjectOfType<ItemAcquired>().IncreaseStat("Damage");
     }
 
     private void PlaySwordSwipeSound(int number)
