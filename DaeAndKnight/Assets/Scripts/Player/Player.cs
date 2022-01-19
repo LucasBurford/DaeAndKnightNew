@@ -185,7 +185,7 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F))
         {
-            if (healthPotions > 0)
+            if (healthPotions > 0 && currentHealth != maxHealth)
             {
                 UseHealthPotion();
             }
