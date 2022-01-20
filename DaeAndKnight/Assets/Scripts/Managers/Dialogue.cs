@@ -43,6 +43,7 @@ public class Dialogue : MonoBehaviour
         {
             textDisplay.text = "";
             continueButton.SetActive(false);
+            FindObjectOfType<PlayerAttack>().isInDialogue = false;
         }
     }
 

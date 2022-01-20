@@ -41,6 +41,8 @@ public class PlayerMovement : MonoBehaviour
     // Decide if player can dash
     public bool hasDash;
     public bool canDash;
+    public bool hasVerticalDash;
+    public bool canVerticalDash;
 
     public bool isPlaying;
     #endregion
@@ -149,6 +151,21 @@ public class PlayerMovement : MonoBehaviour
                 StartCoroutine(WaitToResetDash());
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.W) && hasVerticalDash && canVerticalDash && !controller.isGrounded)
+        {
+            // Vertical dash
+            Vector3 dash = new Vector3(0, 0, 0);
+
+            dash = new Vector3(0, dashForce, 0);
+
+            controller.Move(dash);
+            FindObjectOfType<AudioManager>().Play("Dash");
+            canDash = false;
+            ps.Play();
+            StartCoroutine(WaitToStopParticleSystem());
+            StartCoroutine(WaitToResetDash());
+        }
         #endregion
         animator.SetBool("KnightIsRunning", knightIsRunning);
         #endregion
@@ -175,7 +192,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        print(collision.gameObject.name);
         if (collision.gameObject.name == "platform")
         {
             FindObjectOfType<AudioManager>().Play("WoodPlatformLanding");

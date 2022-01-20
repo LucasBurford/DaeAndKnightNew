@@ -34,6 +34,7 @@ public class PlayerAttack : MonoBehaviour
 
     public bool hasShield;
     public bool isblocking;
+    public bool isInDialogue;
     #endregion
 
     #endregion
@@ -55,7 +56,7 @@ public class PlayerAttack : MonoBehaviour
     private void GetInput()
     {
         // If player clicks left mouse button
-        if (Input.GetButtonDown("Fire1") && canAttack)
+        if (Input.GetButtonDown("Fire1") && canAttack && !isInDialogue)
         {
             isAttacking = true;
 
