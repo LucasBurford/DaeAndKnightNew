@@ -22,8 +22,8 @@ public class PlayerMovement : MonoBehaviour
     // Move speed and gravity
     public float knightMoveSpeed;
     public float gravity = 9.81f;
-    public float jumpSpeed = 3.5f;
-    public float doubleJumpMultiplier = 0.5f;
+    public float jumpForce;
+    public float doubleJumpMultiplier;
     public float dashForce;
 
     private float directionY;
@@ -43,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
     public bool canDash;
     public bool hasVerticalDash;
     public bool canVerticalDash;
+    public bool isGrappling;
 
     public bool isPlaying;
     #endregion
@@ -71,9 +72,11 @@ public class PlayerMovement : MonoBehaviour
         {
             canDoubleJump = true;
 
+            directionY = 0;
+
             if (Input.GetButtonDown("Jump"))
             {
-                directionY = jumpSpeed;
+                directionY = jumpForce;
                 FindObjectOfType<AudioManager>().Play("KnightJump");
             }
         }
@@ -81,11 +84,13 @@ public class PlayerMovement : MonoBehaviour
         {
             if (Input.GetButtonDown("Jump") && canDoubleJump && hasDoubleJump)
             {
-                directionY = jumpSpeed * doubleJumpMultiplier;
+                directionY = jumpForce * doubleJumpMultiplier;
                 FindObjectOfType<AudioManager>().Play("KnightDoubleJump");
                 canDoubleJump = false;
             }
         }
+
+        print(controller.isGrounded);
 
         directionY -= gravity * Time.deltaTime;
         direction.y = directionY;
@@ -176,7 +181,6 @@ public class PlayerMovement : MonoBehaviour
 
         }
     }
-
 
     IEnumerator WaitToResetDash()
     {
