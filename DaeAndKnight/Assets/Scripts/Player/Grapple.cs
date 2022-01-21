@@ -45,6 +45,8 @@ public class Grapple : MonoBehaviour
                 // Teleport player to clicked point but keep x the same
                 transform.position = new Vector3(transform.position.x, clickedPoint.y, clickedPoint.z);
 
+                FindObjectOfType<AudioManager>().Play("Portal");
+
                 //startPos = transform.position;
                 //shouldLerp = true;
             }
