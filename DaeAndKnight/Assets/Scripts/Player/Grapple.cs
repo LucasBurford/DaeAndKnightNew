@@ -12,11 +12,11 @@ public class Grapple : MonoBehaviour
     Vector3 clickedPoint;
     Vector3 startPos;
 
-
     public float distanceToWorld;
     public float maxRayDistance;
     public float lerpSpeed;
     public float stoppingDistance;
+    public float removeLineTime;
 
     public bool shouldLerp;
 
@@ -34,6 +34,8 @@ public class Grapple : MonoBehaviour
             // Cast a line between player and clicked point and check if it collides with any grapple objects
             if (Physics.Linecast(rayOrigin.position, clickedPoint, grappleLayer))
             {
+                lr.enabled = true;
+
                 Vector3[] lrVectors = new Vector3[]
                 {   
                     rayOrigin.position,
@@ -47,10 +49,11 @@ public class Grapple : MonoBehaviour
 
                 FindObjectOfType<AudioManager>().Play("Portal");
 
+                StartCoroutine(WaitToRemoveLine());
+
                 //startPos = transform.position;
                 //shouldLerp = true;
             }
-            print(clickedPoint);
         }
 
         if (shouldLerp)
@@ -64,5 +67,11 @@ public class Grapple : MonoBehaviour
 
             print(Vector3.Distance(transform.position, clickedPoint));
         }
+    }
+
+    IEnumerator WaitToRemoveLine()
+    {
+        yield return new WaitForSeconds(removeLineTime);
+        lr.enabled = false;
     }
 }

@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    public Vector3 newCheckpoint;
-
     public bool triggered;
 
     private void OnTriggerEnter(Collider other)
@@ -15,7 +13,7 @@ public class Checkpoint : MonoBehaviour
             if (!triggered)
             {
                 triggered = true;
-                FindObjectOfType<Player>().SetCheckpoint(newCheckpoint);
+                FindObjectOfType<Player>().SetCheckpoint(transform.position);
             }
             else
             {

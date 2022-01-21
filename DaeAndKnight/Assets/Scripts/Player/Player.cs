@@ -40,6 +40,7 @@ public class Player : MonoBehaviour
     public bool isStunned;
     public bool canRechargeStamina;
     public bool deathAudioPlayed;
+    public bool hasDied;
 
     // Start is called before the first frame update
     void Start()
@@ -117,8 +118,10 @@ public class Player : MonoBehaviour
     {
         animator.SetTrigger("Recover");
         StartCoroutine(WaitToBackToIdle());
-        transform.position = new Vector3(0, 1, -5);
+        transform.position = new Vector3(transform.position.x, checkpoint.y, checkpoint.z);
+        //transform.position = new Vector3(0, 1, -5);
         currentHealth = maxHealth;
+        hasDied = false;
     }
 
     private void UseHealthPotion()
@@ -234,14 +237,19 @@ public class Player : MonoBehaviour
 
     private void Die()
     {
-        if (!deathAudioPlayed)
+        if (!hasDied)
         {
-            deathAudioPlayed = true;
-            FindObjectOfType<AudioManager>().Play("PlayerDeath");
+            hasDied = true;
+
+            if (!deathAudioPlayed)
+            {
+                deathAudioPlayed = true;
+                FindObjectOfType<AudioManager>().Play("PlayerDeath");
+            }
+            playerMovement.canMove = false;
+            animator.SetBool("IsDead", true);
+            StartCoroutine(WaitToRespawn());
         }
-        playerMovement.canMove = false;
-        animator.SetBool("IsDead", true);
-        StartCoroutine(WaitToRespawn());
     }
 
     private void CheckLevel()
