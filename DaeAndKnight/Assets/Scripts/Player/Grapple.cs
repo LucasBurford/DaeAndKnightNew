@@ -4,97 +4,63 @@ using UnityEngine;
 
 public class Grapple : MonoBehaviour
 {
-    #region Boilerplate
+    public Camera cam;
     public LineRenderer lr;
+    public LayerMask grappleLayer;
+    public Transform rayOrigin;
 
-    public LayerMask whatIsGrappable;
+    Vector3 clickedPoint;
+    Vector3 startPos;
 
-    // Point to grapple to 
-    public Vector3 grapplePoint;
 
-    // Grapple origin
-    public Transform grappleOrigin, player;
+    public float distanceToWorld;
+    public float maxRayDistance;
+    public float lerpSpeed;
+    public float stoppingDistance;
 
-    public SpringJoint joint;
-    #endregion
-
-    #region Gameplay and spec
-    // Max length of rope
-    public float ropeLength;
-
-    public bool grappled;
-
-    public float minDistance;
-    public float maxDistance;
-    public float spring;
-    public float damper;
-    public float massScale;
-
-    #endregion
-    private void Awake()
-    {
-        lr = GetComponent<LineRenderer>();
-    }
+    public bool shouldLerp;
 
     private void Update()
     {
-        if (Input.GetButton("Fire1"))
+        // Store clicked positon in world
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = distanceToWorld;
+
+        // Check if player clicks mouse, store clicked position in clickedPoint
+        if (Input.GetButtonDown("Fire1"))
         {
-            StartGrapple();
+            clickedPoint = cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distanceToWorld));
+
+            // Cast a line between player and clicked point and check if it collides with any grapple objects
+            if (Physics.Linecast(rayOrigin.position, clickedPoint, grappleLayer))
+            {
+                Vector3[] lrVectors = new Vector3[]
+                {   
+                    rayOrigin.position,
+                    clickedPoint
+                };
+
+                lr.SetPositions(lrVectors);
+
+                // Teleport player to clicked point but keep x the same
+                transform.position = new Vector3(transform.position.x, clickedPoint.y, clickedPoint.z);
+
+                //startPos = transform.position;
+                //shouldLerp = true;
+            }
+            print(clickedPoint);
         }
-        else if (Input.GetButtonUp("Fire1"))
+
+        if (shouldLerp)
         {
-            StopGrapple();
+            transform.position = Vector3.Lerp(startPos, new Vector3(transform.position.x, clickedPoint.y, clickedPoint.z), lerpSpeed);
+
+            if (Vector3.Distance(transform.position, clickedPoint) < stoppingDistance)
+            {
+                shouldLerp = false;
+            }
+
+            print(Vector3.Distance(transform.position, clickedPoint));
         }
-    }
-
-    private void LateUpdate()
-    {
-        DrawRope();
-    }
-
-    private void StartGrapple()
-    {
-        RaycastHit hit;
-
-        if (Physics.Raycast(grappleOrigin.position, grappleOrigin.up, out hit, ropeLength, whatIsGrappable))
-        {
-            // Get where grapple hits
-            grapplePoint = hit.point;
-
-            // Create a new joint
-            joint = player.gameObject.AddComponent<SpringJoint>();
-            joint.autoConfigureConnectedAnchor = false;
-
-            // Get grappled rigid body
-            joint.connectedBody = hit.collider.attachedRigidbody;
-
-            joint.minDistance = minDistance;
-            joint.maxDistance = maxDistance;
-
-            lr.positionCount = 2;
-
-            print(hit.collider.gameObject.name);
-        }
-    }
-
-    private void DrawRope()
-    {
-        // If not grappling, don't draw line
-        if (!joint) return;
-
-        lr.SetPosition(0, grappleOrigin.position);
-        lr.SetPosition(1, grapplePoint);
-    }
-
-    private void StopGrapple()
-    {
-        lr.positionCount = 0;
-        Destroy(joint);
-    }
-
-    private void ChangePlayerGrapple(bool x)
-    {
-        FindObjectOfType<PlayerMovement>().isGrappling = x;
     }
 }
