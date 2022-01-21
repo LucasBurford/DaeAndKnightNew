@@ -109,6 +109,8 @@ public class PlayerAttack : MonoBehaviour
                     damageText.text = attackDamage.ToString() + " damage!";
                     StartCoroutine(WaitToRemoveDamageText());
                 }
+
+                print(col.gameObject.name);
             }
 
             canAttack = false;

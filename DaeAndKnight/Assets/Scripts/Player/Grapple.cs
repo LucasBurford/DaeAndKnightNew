@@ -18,6 +18,7 @@ public class Grapple : MonoBehaviour
     public float stoppingDistance;
     public float removeLineTime;
 
+    public bool hasGrapple;
     public bool shouldLerp;
 
     private void Update()
@@ -27,7 +28,7 @@ public class Grapple : MonoBehaviour
         mousePos.z = distanceToWorld;
 
         // Check if player clicks mouse, store clicked position in clickedPoint
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1") && hasGrapple)
         {
             clickedPoint = cam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distanceToWorld));
 
