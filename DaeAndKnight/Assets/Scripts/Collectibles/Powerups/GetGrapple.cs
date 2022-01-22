@@ -9,7 +9,7 @@ public class GetGrapple : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             FindObjectOfType<Grapple>().hasGrapple = true;
-            FindObjectOfType<ItemAcquired>().AcquiredItem("Grapple", "Left click on blue and orange portals");
+            FindObjectOfType<ItemAcquired>().AcquiredItem("Grapple", "Left click on blue and orange portals - can teleport through walls");
             Destroy(gameObject);
         }
     }
