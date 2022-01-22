@@ -17,6 +17,7 @@ public class Skeleton : MonoBehaviour
     public float attackDamage;
     public float attackRange;
     public float walkSpeed;
+    public float stoppingDistance;
 
     public bool isTouchingPlayer;
     public bool canAttack;
@@ -41,7 +42,7 @@ public class Skeleton : MonoBehaviour
             FindObjectOfType<AudioManager>().Play("SkeletonIdle");
         }
 
-        if (Vector3.Distance(transform.position, player.transform.position) < 5)
+        if (Vector3.Distance(transform.position, player.transform.position) < stoppingDistance)
         {
             agent.isStopped = false;
             walkSpeed = 1;

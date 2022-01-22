@@ -8,6 +8,11 @@ public class Grapple : MonoBehaviour
     public LineRenderer lr;
     public LayerMask grappleLayer;
     public Transform rayOrigin;
+    public Material lrMaterial;
+    public Gradient lrGradient;
+
+    public Color lrCol1;
+    public Color lrCol2;
 
     Vector3 clickedPoint;
     Vector3 startPos;
@@ -17,6 +22,8 @@ public class Grapple : MonoBehaviour
     public float lerpSpeed;
     public float stoppingDistance;
     public float removeLineTime;
+    public float lrStartWidth;
+    public float lrEndWidth;
 
     public bool hasGrapple;
     public bool shouldLerp;
@@ -35,7 +42,21 @@ public class Grapple : MonoBehaviour
             // Cast a line between player and clicked point and check if it collides with any grapple objects
             if (Physics.Linecast(rayOrigin.position, clickedPoint, grappleLayer))
             {
-                lr.enabled = true;
+                lr = gameObject.AddComponent<LineRenderer>();
+                lr.startWidth = lrStartWidth;
+                lr.endWidth = lrEndWidth;
+                lr.material = lrMaterial;
+
+                float alpha = 1f;
+
+                lr.startColor = lrCol1;
+                lr.endColor = lrCol2;
+
+                lrGradient.SetKeys(
+                    new GradientColorKey[] { new GradientColorKey(lrCol1, 1f), new GradientColorKey(lrCol2, 1f) },
+                    new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1f)}
+                );
+                                    
 
                 Vector3[] lrVectors = new Vector3[]
                 {   
@@ -73,6 +94,6 @@ public class Grapple : MonoBehaviour
     IEnumerator WaitToRemoveLine()
     {
         yield return new WaitForSeconds(removeLineTime);
-        lr.enabled = false;
+        Destroy(lr);
     }
 }

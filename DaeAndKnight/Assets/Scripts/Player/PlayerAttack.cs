@@ -11,15 +11,25 @@ public class PlayerAttack : MonoBehaviour
     [Header("References")]
     public Player player;
     public Animator animator;
+    public TrailRenderer tr;
     public Transform attackPoint;
+    public Transform magicAttackPoint;
     public LayerMask enemyLayers;
     public TMP_Text damageText;
     Camera cam;
 
+    public GameObject fireBallPrefab;
     #endregion
 
     #region Gameplay and spec
-    [Header("Gameplay and soec")]
+    [Header("Gameplay and spec")]
+    public Attacks selectedAttack;
+    public enum Attacks
+    {
+        Melee,
+        Fireball
+    }
+
     public int criticalChance;
     public int comboCounter;
     public int damageUps;
@@ -27,6 +37,8 @@ public class PlayerAttack : MonoBehaviour
     public float attackResetTime;
     public float attackDamage;
     public float attackRange;
+    public float magicAttackForce;
+    public float distanceToWorld;
 
     public bool canAttack;
     public bool isAttacking;
@@ -35,6 +47,8 @@ public class PlayerAttack : MonoBehaviour
     public bool hasShield;
     public bool isblocking;
     public bool isInDialogue;
+
+    public bool hasFireball;
     #endregion
 
     #endregion
@@ -55,81 +69,125 @@ public class PlayerAttack : MonoBehaviour
 
     private void GetInput()
     {
+        #region Handle attack input
         // If player clicks left mouse button
         if (Input.GetButtonDown("Fire1") && canAttack && !isInDialogue)
         {
-            isAttacking = true;
-
-            comboCounter++;
-
-            if (comboCounter == 1)
+            if (selectedAttack == Attacks.Melee)
             {
-                animator.SetBool("IsAttacking", isAttacking);
-            } 
-            else if (comboCounter == 2)
-            {
-                animator.SetBool("IsAttacking", isAttacking);
-            } 
-            else if (comboCounter == 3)
-            {
-                animator.SetBool("IsAttacking2", isAttacking);
-                attackDamage += 10;
-            }
+                isAttacking = true;
 
-            PlayPlayerAttackSound(comboCounter);
-            StartCoroutine(WaitToResetAttackAnimation());
+                comboCounter++;
 
-            int generateCritical = Random.Range(1, criticalChance);
+                // tr.enabled = true;
 
-            if (generateCritical == criticalChance)
-            {
-                attackDamage *= 2;
-                justHadCritical = true;
-                PlaySwordSwipeSound(7);
-                print("CRITICAL!");
-            }
-            else
-            {
-                PlaySwordSwipeSound(Random.Range(1, 6));
-            }
-
-            // Cast a sphere with a centre of attackPoint and radius of attackRange only on enemyLayers
-            Collider[] hitObjects = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
-
-            // Iterate through array and cause damage
-            foreach(Collider col in hitObjects)
-            {
-                // If we hit a gameobject with Enemy tag, SendMessage to take damage
-                if (col.gameObject.CompareTag("Enemy"))
+                if (comboCounter == 1)
                 {
-                    GameObject go = col.gameObject;
-                    go.SendMessageUpwards("TakeDamage", attackDamage);
-
-                    damageText.gameObject.SetActive(true);
-                    damageText.text = attackDamage.ToString() + " damage!";
-                    StartCoroutine(WaitToRemoveDamageText());
+                    animator.SetBool("IsAttacking", isAttacking);
+                }
+                else if (comboCounter == 2)
+                {
+                    animator.SetBool("IsAttacking", isAttacking);
+                }
+                else if (comboCounter == 3)
+                {
+                    animator.SetBool("IsAttacking2", isAttacking);
+                    attackDamage += 10;
+                    tr.startWidth += 1;
                 }
 
-                print(col.gameObject.name);
+                PlayPlayerAttackSound(comboCounter);
+                StartCoroutine(WaitToResetAttackAnimation());
+
+                int generateCritical = Random.Range(1, criticalChance);
+
+                if (generateCritical == criticalChance)
+                {
+                    attackDamage *= 2;
+                    justHadCritical = true;
+                    PlaySwordSwipeSound(7);
+                    print("CRITICAL!");
+                }
+                else
+                {
+                    PlaySwordSwipeSound(Random.Range(1, 6));
+                }
+
+                // Cast a sphere with a centre of attackPoint and radius of attackRange only on enemyLayers
+                Collider[] hitObjects = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
+
+                // Iterate through array and cause damage
+                foreach (Collider col in hitObjects)
+                {
+                    // If we hit a gameobject with Enemy tag, SendMessage to take damage
+                    if (col.gameObject.CompareTag("Enemy"))
+                    {
+                        print("Hit enemy tag");
+                        GameObject go = col.gameObject;
+                        go.SendMessageUpwards("TakeDamage", attackDamage);
+
+                        damageText.gameObject.SetActive(true);
+                        damageText.text = attackDamage.ToString() + " damage!";
+                        StartCoroutine(WaitToRemoveDamageText());
+                    }
+
+                    print(col.gameObject.name);
+                }
+
+                canAttack = false;
+
+                // Prevent attack spam
+                StartCoroutine(WaitToResetAttack());
             }
 
-            canAttack = false;
+            if (selectedAttack == Attacks.Fireball && hasFireball)
+            {
+                FireballAttack();
+            }
 
-            // Prevent attack spam
-            StartCoroutine(WaitToResetAttack());
-        }
+            #region Block
+            if (Input.GetMouseButton(1) && hasShield)
+            {
+                isblocking = true;
+            }
+            else if (Input.GetMouseButtonUp(1) && hasShield)
+            {
+                isblocking = false;
+            }
 
-        if (Input.GetMouseButton(1) && hasShield)
-        {
-            isblocking = true;
+            CheckBlock();
+            #endregion
         }
-        else if (Input.GetMouseButtonUp(1) && hasShield)
+        #endregion
+        #region Handle attack selection input
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            isblocking = false;
+            selectedAttack = Attacks.Melee;
         }
-        
-        CheckBlock();
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            selectedAttack = Attacks.Fireball;
+        }
+        #endregion
+
     }
+
+    #region Magic attacks
+    private void FireballAttack()
+    {
+        canAttack = false;
+        StartCoroutine(WaitToResetAttack());
+
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.x = distanceToWorld;
+
+        GameObject fireBall = Instantiate(fireBallPrefab, mousePos, Quaternion.identity);
+        Rigidbody rb = fireBall.GetComponent<Rigidbody>();
+        rb.velocity = transform.forward * magicAttackForce;
+
+        FindObjectOfType<AudioManager>().Play("FireballAttack");
+    }
+    #endregion
 
     private void CheckBlock()
     {
@@ -235,19 +293,22 @@ public class PlayerAttack : MonoBehaviour
     {
         yield return new WaitForSeconds(attackResetTime);
 
+        canAttack = true;
+
         if (justHadCritical)
         {
             attackDamage /= 2;
             justHadCritical = false;
         }
-
-        canAttack = true;
     }
 
     IEnumerator WaitToResetAttackAnimation()
     {
         yield return new WaitForSeconds(0.7f);
         isAttacking = false;
+
+       // tr.enabled = false;
+
         if (comboCounter == 3)
         {
             animator.SetBool("IsAttacking2", isAttacking);

@@ -90,8 +90,6 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        print(controller.isGrounded);
-
         directionY -= gravity * Time.deltaTime;
         direction.y = directionY;
         #endregion
