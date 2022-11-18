@@ -64,7 +64,8 @@ public class PlayerAttack : MonoBehaviour
     {
         //animator.SetBool("IsAttacking", isAttacking);
 
-        GetInput();   
+        GetInput();
+        CheckBlock();
     }
 
     private void GetInput()
@@ -154,10 +155,11 @@ public class PlayerAttack : MonoBehaviour
             {
                 isblocking = false;
             }
-
-            CheckBlock();
             #endregion
         }
+
+        isblocking = Input.GetButton("Fire2");
+
         #endregion
         #region Handle attack selection input
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -181,7 +183,7 @@ public class PlayerAttack : MonoBehaviour
         Vector3 mousePos = Input.mousePosition;
         mousePos.x = distanceToWorld;
 
-        GameObject fireBall = Instantiate(fireBallPrefab, mousePos, Quaternion.identity);
+        GameObject fireBall = Instantiate(fireBallPrefab, attackPoint.position, Quaternion.identity);
         Rigidbody rb = fireBall.GetComponent<Rigidbody>();
         rb.velocity = transform.forward * magicAttackForce;
 

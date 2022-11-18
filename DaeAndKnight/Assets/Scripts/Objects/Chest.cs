@@ -13,9 +13,9 @@ public class Chest : MonoBehaviour
         player = FindObjectOfType<Player>();
     }
 
-    private void OnCollisionStay(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player") && !collected)
+        if (collision.gameObject.GetComponent<Player>())
         {
             collected = true;
             player.GiveGold(Random.Range(5, 10));
